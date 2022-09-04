@@ -60,6 +60,29 @@ void NLSolver::compute()
 
     while (true)
     {
+        // Calculate f(val)
+        Eigen::VectorXd y = Eigen::VectorXd::Zero(numEqs);
+        for (int i = 0; i < m_solverElements.size(); ++i)
+        {
+            NLSolverElement& element = m_solverElements[i];
+            std::vector<double> edgeArguments = getSubVector(vals, 0, element.edges);
+            std::vector<double> nodeArguments = getSubVector(vals, numEdges, element.nodes);
+            y(i) = element.equation(edgeArguments, nodeArguments);
+        }
+        for (int i=0; i<numNodes/* - 1*/; ++i)
+        {
+            int rowIdx = numEdges + i;
+            for (const auto& edge : m_nodes[i].incidentEdges)
+            {
+                y(rowIdx) += edge.first * vals(edge.second);
+            }
+        }
+        y(numEqs-1) = vals(numEqs-1);
+        if (y.norm() < m_convergenceTolerance)
+        {
+            break;
+        }
+
         // Construct the jacobian
         Eigen::MatrixXd J = Eigen::MatrixXd::Zero(numEqs, numEqs);
 
@@ -89,25 +112,6 @@ void NLSolver::compute()
         }
         J(numEqs-1, numEqs-1) = 1.;
 
-        // Calculate f(val)
-        Eigen::VectorXd y = Eigen::VectorXd::Zero(numEqs);
-        for (int i = 0; i < m_solverElements.size(); ++i)
-        {
-            NLSolverElement& element = m_solverElements[i];
-            std::vector<double> edgeArguments = getSubVector(vals, 0, element.edges);
-            std::vector<double> nodeArguments = getSubVector(vals, numEdges, element.nodes);
-            y(i) = element.equation(edgeArguments, nodeArguments);
-        }
-        for (int i=0; i<numNodes/* - 1*/; ++i)
-        {
-            int rowIdx = numEdges + i;
-            for (const auto& edge : m_nodes[i].incidentEdges)
-            {
-                y(rowIdx) += edge.first * vals(edge.second);
-            }
-        }
-        y(numEqs-1) = vals(numEqs-1);
-
 //        for (int i = 0; i < numEqs; ++i)
 //        {
 //            std::string debugString;
@@ -129,13 +133,11 @@ void NLSolver::compute()
 //            qDebug() << debugString.c_str() /*<< " || " << std::to_string(u(i)).c_str()*/;
 //        }
 
+//        qDebug() << "det(J) = " << J.determinant() << "\n";
+
         // Do Newton step
         Eigen::VectorXd diff = J.colPivHouseholderQr().solve(y);
         vals = vals - diff;
-        if (diff.norm() < m_convergenceTolerance)
-        {
-            break;
-        }
     }
 
     m_currents.reserve(numEdges);

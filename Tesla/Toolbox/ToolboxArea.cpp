@@ -76,6 +76,10 @@ void ToolboxArea::setSelectedItem(int index)
     {
         m_mainView->setCurrentMouseMode(MouseModes::BulbMM);
     }
+    else if (m_currSelected == 7)
+    {
+        m_mainView->setCurrentMouseMode(MouseModes::DiodeMM);
+    }
 }
 
 void ToolboxArea::setIsAvailable(bool isAvailable)

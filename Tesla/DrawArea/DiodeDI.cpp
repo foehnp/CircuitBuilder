@@ -20,26 +20,44 @@ void DiodeDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *opt
     double halfThickness = 0.5 * m_thickness * m_squareBreadth;
     double halfSquareBreadth = 0.5 * m_squareBreadth;
 
-    QColor color;
+    QColor leftColor, rightColor;
     if (m_runMode == Drawing)
     {
-        color = Qt::black;
+        leftColor = rightColor = Qt::black;
     }
     else
     {
         if (m_displaySettings->getCurrentQuantity() == Potential)
         {
-            color = m_displaySettings->getColorFromCurrentScale(m_NLsolver->getPotential(m_leftNode));
+            leftColor = m_displaySettings->getColorFromCurrentScale(m_NLsolver->getPotential(m_leftNode));
+            rightColor = m_displaySettings->getColorFromCurrentScale(m_NLsolver->getPotential(m_rightNode));
         }
         else if (m_displaySettings->getCurrentQuantity() == Current)
         {
-            color = m_displaySettings->getColorFromCurrentScale(std::abs(m_NLsolver->getCurrent(m_edge)));
+            leftColor = rightColor = m_displaySettings->getColorFromCurrentScale(std::abs(m_NLsolver->getCurrent(m_edge)));
         }
     }
 
-    painter->setBrush(color);
+    painter->setBrush(leftColor);
     painter->setPen(QPen(Qt::PenStyle::NoPen));
-    painter->drawRect(QRectF(-halfSquareBreadth, 0. - halfThickness, m_squareBreadth, 2*halfThickness));
+    painter->drawRect(QRectF(-halfSquareBreadth, -halfThickness, halfSquareBreadth, 2.*halfThickness));
+
+    painter->setBrush(rightColor);
+    painter->setPen(QPen(Qt::PenStyle::NoPen));
+    painter->drawRect(QRectF(0., -halfThickness, halfSquareBreadth, 2*halfThickness));
+
+    painter->setBrush(Qt::black);;
+    painter->setPen(QPen(Qt::PenStyle::NoPen));
+
+    QVector<QPointF> trianglePoints({{-0.3*halfSquareBreadth, -0.4*halfSquareBreadth},
+                            {-0.3*halfSquareBreadth, 0.4*halfSquareBreadth},
+                            {0.3*halfSquareBreadth, 0.}});
+    QPolygonF triangle(trianglePoints);
+    painter->drawPolygon(triangle);
+
+    painter->setBrush(Qt::black);
+    painter->setPen(QPen(Qt::PenStyle::NoPen));
+    painter->drawRect(QRectF(0.3*halfSquareBreadth, -0.4*halfSquareBreadth, 2.*halfThickness, 0.8*halfSquareBreadth));
 
 }
 
@@ -87,7 +105,7 @@ std::vector<NLSolverElement> DiodeDI::getNLSolverElements()
     std::vector<unsigned> edges;
     edges.push_back(m_edge);
 
-    const double reverseCurrent = 0.0000001;
+    const double reverseCurrent = 0.01;
     const double thermalVoltage = 0.025;
 
     DoubleFunction equation = [reverseCurrent, thermalVoltage](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
@@ -95,9 +113,9 @@ std::vector<NLSolverElement> DiodeDI::getNLSolverElements()
     std::vector<DoubleFunction> edgeDerivatives, nodeDerivatives;
     edgeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials){return -1.;});
     nodeDerivatives.push_back([reverseCurrent, thermalVoltage](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                            {return -exp((nodePotentials[1] - nodePotentials[0])/thermalVoltage) * reverseCurrent / thermalVoltage * nodePotentials[0];});
+                            {return -exp((nodePotentials[1] - nodePotentials[0])/thermalVoltage) * reverseCurrent / thermalVoltage;});
     nodeDerivatives.push_back([reverseCurrent, thermalVoltage](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                            {return exp((nodePotentials[1] - nodePotentials[0])/thermalVoltage) * reverseCurrent / thermalVoltage * nodePotentials[1];});
+                            {return exp((nodePotentials[1] - nodePotentials[0])/thermalVoltage) * reverseCurrent / thermalVoltage;});
     res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives);
 
     return res;

@@ -26,6 +26,7 @@ SOURCES += \
         Toolbox/BatteryTI.cpp \
         Toolbox/BulbTI.cpp \
         Toolbox/CornerWireTI.cpp \
+        Toolbox/DiodeTI.cpp \
         Toolbox/EmptyComponentTI.cpp \
         Toolbox/EraserTI.cpp \
         Toolbox/ForkTI.cpp \
@@ -60,6 +61,7 @@ HEADERS += \
     Toolbox/BatteryTI.h \
     Toolbox/BulbTI.h \
     Toolbox/CornerWireTI.h \
+    Toolbox/DiodeTI.h \
     Toolbox/EmptyComponentTI.h \
     Toolbox/ComponentTI.h \
     Toolbox/EraserTI.h \

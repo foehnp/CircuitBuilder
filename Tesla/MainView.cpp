@@ -13,6 +13,7 @@
 #include <Toolbox/BatteryTI.h>
 #include <Toolbox/BulbTI.h>
 #include <Toolbox/ForkTI.h>
+#include <Toolbox/DiodeTI.h>
 
 #include <Scale/ScaleCollection.h>
 #include <Scale/ScaleWidget.h>
@@ -144,6 +145,7 @@ void MainView::initializeToolboxArea()
     EraserTI* erTI = new EraserTI(m_squareBreadth);
     BatteryTI* batTI = new BatteryTI(m_squareBreadth, wireThickness);
     BulbTI* bulbTI = new BulbTI(m_squareBreadth, wireThickness);
+    DiodeTI* diodeTI = new DiodeTI(m_squareBreadth, wireThickness);
 
     m_toolboxArea->pushBackItem(eTI);
     m_toolboxArea->pushBackItem(erTI);
@@ -152,4 +154,5 @@ void MainView::initializeToolboxArea()
     m_toolboxArea->pushBackItem(forkTI);
     m_toolboxArea->pushBackItem(batTI);
     m_toolboxArea->pushBackItem(bulbTI);
+    m_toolboxArea->pushBackItem(diodeTI);
 }

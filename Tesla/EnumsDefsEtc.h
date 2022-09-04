@@ -15,6 +15,7 @@ enum ComponentName
     Fork,
     Battery,
     Bulb,
+    Diode,
 };
 
 
@@ -26,7 +27,8 @@ enum MouseModes
     CornerWireMM,
     ForkMM,
     BatteryMM,
-    BulbMM
+    BulbMM,
+    DiodeMM,
 };
 
 enum RunMode
