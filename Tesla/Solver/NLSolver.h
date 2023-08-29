@@ -64,6 +64,9 @@ public:
     double getPotential(int i) const;
     double getCurrent(int i) const;
 
+    bool getMinMaxPotential(double& min, double& max) const;
+    bool getMinMaxCurrent(double& min, double& max) const;
+
 private:
     std::vector<NLSolverNode> m_nodes;
     std::vector<NLSolverEdge> m_edges;

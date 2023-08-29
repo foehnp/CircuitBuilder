@@ -45,9 +45,9 @@ MainView::MainView()
 
     m_scaleCollection = std::make_shared<ScaleCollection>();
     m_scaleCollection->setScale(Potential, -1., 1., "Potential");
-    m_scaleCollection->setScale(Current, -1., 1., "Current");
+    m_scaleCollection->setScale(Current, 0., 0.01, "Current");
     m_scaleCollection->setCurrentQuantity(Potential);
-    m_scaleWidget = new ScaleWidget(m_squareBreadth, m_scaleCollection);
+    m_scaleWidget = new ScaleWidget(m_squareBreadth, m_scaleCollection, this);
     QGraphicsProxyWidget * proxyWidget = m_scene->addWidget(m_scaleWidget);
     pos = m_controlPane->boundingRect().topRight() + m_controlPane->pos();
     proxyWidget->setPos(pos.x() + m_squareBreadth*0.2, pos.y());
@@ -112,7 +112,7 @@ void MainView::wheelEvent(QWheelEvent *event)
 
 void MainView::run()
 {
-    m_drawArea->constructSolver();
+//    m_drawArea->constructSolver();
     m_drawArea->constructNLSolver();
     updateValues();
     m_runTimer = new QTimer(this);
@@ -123,6 +123,17 @@ void MainView::run()
 void MainView::stop()
 {
     delete m_runTimer;
+}
+
+void MainView::autoAdjustScale(PhysicalQuantity quantity)
+{
+    double min, max;
+    if (!m_drawArea->getMinMaxValues(quantity, min, max))
+    {
+        return;
+    }
+    m_scaleCollection->setScaleMin(quantity, min);
+    m_scaleCollection->setScaleMax(quantity, max);
 }
 
 void MainView::updateValues()

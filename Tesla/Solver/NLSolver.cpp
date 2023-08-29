@@ -4,6 +4,8 @@
 
 #include <QDebug>
 
+#include <algorithm>
+
 
 NLSolver::NLSolver()
 {
@@ -77,7 +79,7 @@ void NLSolver::compute()
                 y(rowIdx) += edge.first * vals(edge.second);
             }
         }
-        y(numEqs-1) = vals(numEqs-1);
+//        y(numEqs-1) = vals(numEqs-1);
         if (y.norm() < m_convergenceTolerance)
         {
             break;
@@ -110,7 +112,7 @@ void NLSolver::compute()
                 J(rowIdx, edge.second) = edge.first;
             }
         }
-        J(numEqs-1, numEqs-1) = 1.;
+//        J(numEqs-1, numEqs-1) = 1.;
 
 //        for (int i = 0; i < numEqs; ++i)
 //        {
@@ -150,6 +152,9 @@ void NLSolver::compute()
     {
         m_potentials.push_back(vals[numEdges+i]);
     }
+    // Make average potential equal to zero
+    double meanOfPots = std::accumulate(m_potentials.begin(), m_potentials.end(), 0.) / m_potentials.size();
+    std::for_each(m_potentials.begin(), m_potentials.end(), [meanOfPots](double& val){val -= meanOfPots;});
 }
 
 double NLSolver::getPotential(int i) const
@@ -160,4 +165,28 @@ double NLSolver::getPotential(int i) const
 double NLSolver::getCurrent(int i) const
 {
     return m_currents[i];
+}
+
+bool NLSolver::getMinMaxPotential(double &min, double &max) const
+{
+    if (m_potentials.empty())
+    {
+        return false;
+    }
+
+    min = *std::min_element(m_potentials.begin(), m_potentials.end());
+    max = *std::max_element(m_potentials.begin(), m_potentials.end());
+    return true;
+}
+
+bool NLSolver::getMinMaxCurrent(double &min, double &max) const
+{
+    if (m_currents.empty())
+    {
+        return false;
+    }
+
+    min = *std::min_element(m_currents.begin(), m_currents.end());
+    max = *std::max_element(m_currents.begin(), m_currents.end());
+    return true;
 }

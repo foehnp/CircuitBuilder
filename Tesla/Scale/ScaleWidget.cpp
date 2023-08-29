@@ -4,16 +4,21 @@
 #include <QComboBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QPushButton>
 
+#include "MainView.h"
 #include "ScaleCollection.h"
 
-ScaleWidget::ScaleWidget(double breadth, std::weak_ptr<ScaleCollection> scaleCollection) :
+ScaleWidget::ScaleWidget(double breadth, std::weak_ptr<ScaleCollection> scaleCollection, MainView* mainView) :
     m_breadth(breadth),
-    m_scaleCollection(scaleCollection)
+    m_scaleCollection(scaleCollection),
+    m_mainView(mainView)
 {
     QHBoxLayout *hlayout = new QHBoxLayout(this);
-    QVBoxLayout *vlayout = new QVBoxLayout(this);
-    hlayout->addLayout(vlayout);
+    QVBoxLayout *leftVlayout = new QVBoxLayout(this);
+    hlayout->addLayout(leftVlayout);
+    QVBoxLayout *righttVlayout = new QVBoxLayout(this);
+    hlayout->addLayout(righttVlayout);
     m_upperLimitSpinBox = new QDoubleSpinBox();
     m_upperLimitSpinBox->setDecimals(4);
     m_upperLimitSpinBox->setMinimum(0.);
@@ -24,10 +29,13 @@ ScaleWidget::ScaleWidget(double breadth, std::weak_ptr<ScaleCollection> scaleCol
     m_lowerLimitSpinBox->setMinimum(-10.);
     m_lowerLimitSpinBox->setMaximum(0.);
     m_lowerLimitSpinBox->setSingleStep(0.0001);
-    vlayout->addWidget(m_upperLimitSpinBox);
-    vlayout->addWidget(m_lowerLimitSpinBox);
+    leftVlayout->addWidget(m_upperLimitSpinBox);
+    leftVlayout->addWidget(m_lowerLimitSpinBox);
     m_physicalQuantityBox = new QComboBox();
-    hlayout->addWidget(m_physicalQuantityBox);
+    righttVlayout->addWidget(m_physicalQuantityBox);
+    m_adjustScaleButton = new QPushButton();
+    m_adjustScaleButton->setText("Adjust scale");
+    righttVlayout->addWidget(m_adjustScaleButton);
 
     fillFromScaleCollection();
     makeInternalConnections();
@@ -66,6 +74,17 @@ void ScaleWidget::on_physicalQuantityBox_currentIndexChanged()
     }
     PhysicalQuantity currentQuantity = m_quantities[m_physicalQuantityBox->currentIndex()];
     collection->setCurrentQuantity(currentQuantity);
+    updateSpinBoxesFromCollection();
+}
+
+void ScaleWidget::on_adjustScaleButton_clicked()
+{
+    auto collection = m_scaleCollection.lock();
+    if (!collection)
+    {
+        return;
+    }
+    m_mainView->autoAdjustScale(collection->getCurrentQuantity());
     updateSpinBoxesFromCollection();
 }
 
@@ -114,4 +133,5 @@ void ScaleWidget::makeInternalConnections()
     connect(m_physicalQuantityBox, &QComboBox::currentIndexChanged,  this, &ScaleWidget::on_physicalQuantityBox_currentIndexChanged);
     connect(m_upperLimitSpinBox, &QDoubleSpinBox::valueChanged,  this, &ScaleWidget::on_upperLimitSpinBox_valueChanged);
     connect(m_lowerLimitSpinBox, &QDoubleSpinBox::valueChanged,  this, &ScaleWidget::on_lowerLimitSpinBox_valueChanged);
+    connect(m_adjustScaleButton, &QPushButton::clicked,  this, &ScaleWidget::on_adjustScaleButton_clicked);
 }

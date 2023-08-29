@@ -30,6 +30,7 @@ public:
     void run();
     void stop();
 
+    void autoAdjustScale(PhysicalQuantity quantity);
 
 private:
     void initializeDrawArea();
