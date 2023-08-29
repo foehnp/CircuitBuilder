@@ -15,13 +15,15 @@ ScaleWidget::ScaleWidget(double breadth, std::weak_ptr<ScaleCollection> scaleCol
     QVBoxLayout *vlayout = new QVBoxLayout(this);
     hlayout->addLayout(vlayout);
     m_upperLimitSpinBox = new QDoubleSpinBox();
+    m_upperLimitSpinBox->setDecimals(4);
     m_upperLimitSpinBox->setMinimum(0.);
     m_upperLimitSpinBox->setMaximum(10.);
-    m_upperLimitSpinBox->setSingleStep(0.01);
+    m_upperLimitSpinBox->setSingleStep(0.0001);
     m_lowerLimitSpinBox = new QDoubleSpinBox();
+    m_lowerLimitSpinBox->setDecimals(4);
     m_lowerLimitSpinBox->setMinimum(-10.);
     m_lowerLimitSpinBox->setMaximum(0.);
-    m_lowerLimitSpinBox->setSingleStep(0.01);
+    m_lowerLimitSpinBox->setSingleStep(0.0001);
     vlayout->addWidget(m_upperLimitSpinBox);
     vlayout->addWidget(m_lowerLimitSpinBox);
     m_physicalQuantityBox = new QComboBox();
