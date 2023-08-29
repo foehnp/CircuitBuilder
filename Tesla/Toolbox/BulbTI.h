@@ -13,9 +13,4 @@ private:
 private:
     double m_wireThickness = 0.05;
     double m_radius = 0.25;
-
-    QGraphicsRectItem* m_leftWire;
-    QGraphicsRectItem* m_rightWire;
-    QGraphicsRectItem* m_crossBar0;
-    QGraphicsRectItem* m_crossBar1;
 };
