@@ -13,13 +13,20 @@ struct NLSolverElement
     DoubleFunction equation;
     std::vector<DoubleFunction> edgeDerivatives;
     std::vector<DoubleFunction> nodeDerivatives;
+    std::string debugName;
 
-    NLSolverElement(std::vector<unsigned> edges, std::vector<unsigned> nodes, DoubleFunction equation, std::vector<DoubleFunction> edgeDerivatives, std::vector<DoubleFunction> nodeDerivatives) :
+    NLSolverElement(std::vector<unsigned> edges,
+                    std::vector<unsigned> nodes,
+                    DoubleFunction equation,
+                    std::vector<DoubleFunction> edgeDerivatives,
+                    std::vector<DoubleFunction> nodeDerivatives,
+                    std::string debugName = "") :
         nodes(nodes),
         edges(edges),
         equation(equation),
         edgeDerivatives(edgeDerivatives),
-        nodeDerivatives(nodeDerivatives)
+        nodeDerivatives(nodeDerivatives),
+        debugName(debugName)
     {}
 
 };
