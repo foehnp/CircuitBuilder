@@ -52,8 +52,8 @@ void ForkDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *opti
     if (m_runMode == Running && m_displaySettings->getCurrentQuantity() == Current)
     {
         ComponentDI::paintArrow(painter, {-0.25 * m_squareBreadth, -0.}, m_squareBreadth * 0.1, leftColor, m_NLsolver->getCurrent(m_leftEdge) > 0. ? 0 : 2);
-        ComponentDI::paintArrow(painter, { 0., -0.25 * m_squareBreadth}, m_squareBreadth * 0.1, lowerColor, m_NLsolver->getCurrent(m_upperEdge) > 0. ? 1 : 3);
-        ComponentDI::paintArrow(painter, {0., 0.25 * m_squareBreadth}, m_squareBreadth * 0.1, upperColor, m_NLsolver->getCurrent(m_lowerEdge) > 0. ? 3 : 1);
+        ComponentDI::paintArrow(painter, { 0., -0.25 * m_squareBreadth}, m_squareBreadth * 0.1, upperColor, m_NLsolver->getCurrent(m_upperEdge) > 0. ? 1 : 3);
+        ComponentDI::paintArrow(painter, {0., 0.25 * m_squareBreadth}, m_squareBreadth * 0.1, lowerColor, m_NLsolver->getCurrent(m_lowerEdge) > 0. ? 3 : 1);
     }
 
     painter->setPen(QPen(Qt::PenStyle::NoPen));
@@ -90,6 +90,7 @@ void ForkDI::resetNodes()
     m_leftNode = -1;
     m_upperNode = -1;
     m_lowerNode = -1;
+    m_midNode = -1;
 }
 
 std::vector<std::pair<int *, SolverEdge> > ForkDI::getAllEdges()
