@@ -8,6 +8,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 SOURCES += \
         ControlPane/ControlPane.cpp \
+        DrawArea/BJTDI.cpp \
         DrawArea/BatteryDI.cpp \
         DrawArea/BulbDI.cpp \
         DrawArea/ComponentDI.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
         Scale/ScaleCollection.cpp \
         Solver/NLSolver.cpp \
         Solver/Solver.cpp \
+        Toolbox/BJTTI.cpp \
         Toolbox/BatteryTI.cpp \
         Toolbox/BulbTI.cpp \
         Toolbox/CornerWireTI.cpp \
@@ -42,6 +44,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     ControlPane/ControlPane.h \
+    DrawArea/BJTDI.h \
     DrawArea/BatteryDI.h \
     DrawArea/BulbDI.h \
     DrawArea/ComponentDI.h \
@@ -58,6 +61,7 @@ HEADERS += \
     Scale/ScaleCollection.h \
     Solver/NLSolver.h \
     Solver/Solver.h \
+    Toolbox/BJTTI.h \
     Toolbox/BatteryTI.h \
     Toolbox/BulbTI.h \
     Toolbox/CornerWireTI.h \

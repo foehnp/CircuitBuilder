@@ -7,6 +7,7 @@
 #include <DrawArea/BulbDI.h>
 #include <DrawArea/ForkDI.h>
 #include <DrawArea/DiodeDI.h>
+#include <DrawArea/BJTDI.h>
 
 
 #include <MainView.h>
@@ -82,6 +83,10 @@ ComponentDI* DrawAreaItem::addComponentDI(ComponentName name, int m, int n, int 
     else if ( name == Diode)
     {
         componentDI = new DiodeDI(m_squareBreadth, 0.05, orientation);
+    }
+    else if ( name == BJT)
+    {
+        componentDI = new BJTDI(m_squareBreadth, 0.05, orientation);
     }
     componentDI->setParentItem(this);
     componentDI->setPos((m+0.5)*m_squareBreadth, (n+0.5)*m_squareBreadth);
@@ -162,6 +167,10 @@ void DrawAreaItem::onItemSelected(int m, int n)
     else if (mouseMode == MouseModes::DiodeMM)
     {
         addComponentDI(ComponentName::Diode, m, n, mouseOrientation);
+    }
+    else if (mouseMode == MouseModes::BJTMM)
+    {
+        addComponentDI(ComponentName::BJT, m, n, mouseOrientation);
     }
 }
 

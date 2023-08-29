@@ -16,6 +16,7 @@ enum ComponentName
     Battery,
     Bulb,
     Diode,
+    BJT,
 };
 
 
@@ -29,6 +30,7 @@ enum MouseModes
     BatteryMM,
     BulbMM,
     DiodeMM,
+    BJTMM,
 };
 
 enum RunMode

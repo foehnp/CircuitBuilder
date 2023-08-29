@@ -80,6 +80,10 @@ void ToolboxArea::setSelectedItem(int index)
     {
         m_mainView->setCurrentMouseMode(MouseModes::DiodeMM);
     }
+    else if (m_currSelected == 8)
+    {
+        m_mainView->setCurrentMouseMode(MouseModes::BJTMM);
+    }
 }
 
 void ToolboxArea::setIsAvailable(bool isAvailable)
