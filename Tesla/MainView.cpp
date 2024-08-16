@@ -20,22 +20,34 @@
 #include <Scale/ScaleWidget.h>
 
 #include <QWheelEvent>
+#include <QFile>
 #include <QTimer>
 #include <QGraphicsProxyWidget>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+
+#include <fstream>
+
+#include <Menu/Menu.h>
 
 MainView::MainView()
 {
     m_scene = new QGraphicsScene;
     setScene(m_scene);
 
+    m_menu = new Menu(this, m_squareBreadth * 0.6);
     m_drawArea = new DrawAreaItem(m_horiNumSquares, m_vertNumSquares, m_squareBreadth, this);
     m_toolboxArea = new ToolboxArea(m_squareBreadth, this);
     m_controlPane = new ControlPane(this, m_squareBreadth);
+    m_scene->addItem(m_menu);
     m_scene->addItem(m_drawArea);
     m_scene->addItem(m_toolboxArea);
     m_scene->addItem(m_controlPane);
-    m_drawArea->setPos(m_squareBreadth*0.5, m_squareBreadth*0.5);
-    m_toolboxArea->setPos(m_horiNumSquares*m_squareBreadth + m_squareBreadth*1., 0.5*m_squareBreadth);
+    m_menu->setPos(m_squareBreadth*0.5, m_squareBreadth*0.5);
+    double drawAreaYStart = m_menu->boundingRect().bottomLeft().y() + m_squareBreadth*0.8;
+    m_drawArea->setPos(m_squareBreadth*0.5, drawAreaYStart);
+    m_toolboxArea->setPos(m_horiNumSquares*m_squareBreadth + m_squareBreadth*1., drawAreaYStart);
 
     initializeDrawArea();
     initializeToolboxArea();
@@ -134,6 +146,57 @@ void MainView::autoAdjustScale(PhysicalQuantity quantity)
     }
     m_scaleCollection->setScaleMin(quantity, min);
     m_scaleCollection->setScaleMax(quantity, max);
+}
+
+
+static QString DRAWAREA_NAME = "draw_area";
+
+bool MainView::saveToFile(const QString& path) const
+{
+    QJsonDocument document;
+    QJsonObject drawAreaObject;
+    m_drawArea->saveToFile(drawAreaObject);
+    QJsonObject topLevelObject;
+    topLevelObject[DRAWAREA_NAME] = drawAreaObject;
+
+    document.setObject(topLevelObject);
+    QByteArray byteArray = document.toJson();
+
+    std::ofstream ofs(path.toStdString());
+    ofs << byteArray.toStdString();
+    ofs.close();
+    return true;
+}
+
+bool MainView::loadFromFile(const QString& path)
+{
+    QFile file(path);
+    if(!file.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+    QByteArray byteArray = file.readAll();
+    QJsonDocument document = QJsonDocument::fromJson(byteArray);
+    if (!document.isObject())
+    {
+        return false;
+    }
+    QJsonObject topLevelObject = document.object();
+
+    if (!topLevelObject.contains(DRAWAREA_NAME))
+    {
+        return false;
+    }
+    QJsonValue drawAreaValue = topLevelObject[DRAWAREA_NAME];
+    if (!drawAreaValue.isObject())
+    {
+        return false;
+    }
+    if (!m_drawArea->loadFromFile(drawAreaValue.toObject()))
+    {
+        return false;
+    }
+    return true;
 }
 
 void MainView::updateValues()

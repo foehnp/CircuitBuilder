@@ -16,6 +16,10 @@ public:
 
     std::vector<NLSolverElement> getNLSolverElements() override;
 
+    ComponentName getComponentName() const override
+    {
+        return Fork;
+    }
 private:
     void paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
     int* getNodeAtInternal(int direction) override;

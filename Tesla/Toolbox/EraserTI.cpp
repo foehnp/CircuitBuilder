@@ -6,7 +6,6 @@
 EraserTI::EraserTI(double squareBreadth) :
     ComponentTI(squareBreadth)
 {
-//    m_rubberIcon = new QGraphicsPixmapItem("Images/eraser.jpg");
     QPixmap pM(":/Images/eraserTrans.png");
     pM.scaledToHeight(squareBreadth);
     m_eraserIcon = new QGraphicsPixmapItem(pM);

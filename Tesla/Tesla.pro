@@ -20,6 +20,10 @@ SOURCES += \
         DrawArea/ResistorDI.cpp \
         DrawArea/WireDI.cpp \
         MainView.cpp \
+        Menu/Menu.cpp \
+        Menu/MenuAction.cpp \
+        Menu/OpenAction.cpp \
+        Menu/SaveAsAction.cpp \
         Scale/ScaleWidget.cpp \
         Scale/ScaleCollection.cpp \
         Solver/NLSolver.cpp \
@@ -57,6 +61,10 @@ HEADERS += \
     DrawArea/WireDI.h \
     EnumsDefsEtc.h \
     MainView.h \
+    Menu/Menu.h \
+    Menu/MenuAction.h \
+    Menu/OpenAction.h \
+    Menu/SaveAsAction.h \
     Scale/ScaleWidget.h \
     Scale/ScaleCollection.h \
     Solver/NLSolver.h \

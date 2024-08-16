@@ -8,6 +8,7 @@
 
 #include <memory>
 
+class QJsonObject;
 class ScaleCollection;
 
 
@@ -22,7 +23,10 @@ public:
     QRectF boundingRect() const override;
 
     void setOrientation(int orientation){m_orientation = orientation;}
-    int getOrientation(){return m_orientation;}
+    int getOrientation() const
+    {
+        return m_orientation;
+    }
 
     void setCurrentRunMode(const RunMode& runMode);
     RunMode getCurrentRunMode() const;
@@ -41,6 +45,8 @@ public:
     void setSolver(const std::shared_ptr<Solver>& solver);
 
     void setNLSolver(const std::shared_ptr<NLSolver>& NLsolver);
+
+    virtual ComponentName getComponentName() const = 0;
 
 private:
     void paintBackground(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

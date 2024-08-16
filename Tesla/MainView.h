@@ -4,6 +4,7 @@
 
 #include <QGraphicsView>
 
+class Menu;
 class DrawAreaItem;
 class ToolboxArea;
 class ControlPane;
@@ -32,6 +33,10 @@ public:
 
     void autoAdjustScale(PhysicalQuantity quantity);
 
+    bool saveToFile(const QString& path) const;
+
+    bool loadFromFile(const QString& path);
+
 private:
     void initializeDrawArea();
     void initializeToolboxArea();
@@ -40,6 +45,7 @@ private:
 private:
     QGraphicsScene* m_scene;
 
+    Menu* m_menu;
     DrawAreaItem* m_drawArea;
     ToolboxArea* m_toolboxArea;
     ControlPane* m_controlPane;

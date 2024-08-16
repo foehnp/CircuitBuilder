@@ -9,9 +9,11 @@
 #include <DrawArea/DiodeDI.h>
 #include <DrawArea/BJTDI.h>
 
-
 #include <MainView.h>
 
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include <QGraphicsSceneMouseEvent>
 
@@ -409,4 +411,88 @@ bool DrawAreaItem::getMinMaxValues(PhysicalQuantity quantity, double &min, doubl
     min = (int)floor(realMin/step) * step;
     max = (int)ceil(realMax/step) * step;
     return true;
+}
+
+static QString COMPONENTS = "components";
+static QString GENERAL_INFO = "gen_info";
+static QString HORI_SIZE = "hori_size";
+static QString VERT_SIZE = "vert_size";
+static QString ROW_NAME = "row";
+static QString COL_NAME = "col";
+static QString ORIENTATION_NAME = "ori";
+static QString COMPONENT_NAME = "comp_name";
+
+QJsonObject componentToQJsonObject(const ComponentDI& comp, int row, int col)
+{
+    QJsonObject res;
+    res[ORIENTATION_NAME] = comp.getOrientation();
+    res[COMPONENT_NAME] = QString(componentNameToPersistenceName(comp.getComponentName()).c_str());
+    res[ROW_NAME] = row;
+    res[COL_NAME] = col;
+    return res;
+}
+
+bool DrawAreaItem::saveToFile(QJsonObject& res) const
+{
+    QJsonArray array;
+    for (int j = 0; j < m_vertNumSquares; ++j)
+    {
+        for (int i = 0; i < m_horiNumSquares; ++i)
+        {
+            const ComponentDI* comp = m_components[i][j];
+            if (comp && comp->getComponentName() != EmptyComponent)
+            {
+                array.append(componentToQJsonObject(*comp, i, j));
+            }
+        }
+    }
+
+    QJsonObject topLevel;
+    topLevel[COMPONENTS] = array;
+    QJsonObject genInfo;
+    genInfo[HORI_SIZE] = m_horiNumSquares;
+    genInfo[VERT_SIZE] = m_vertNumSquares;
+    topLevel[GENERAL_INFO] = genInfo;
+    res = topLevel;
+    return true;
+}
+
+bool DrawAreaItem::loadFromFile(const QJsonObject& object)
+{
+    if (!object.contains(COMPONENTS))
+    {
+        return false;
+    }
+    QJsonValue componentArrayValue = object[COMPONENTS];
+    if (!componentArrayValue.isArray())
+    {
+        return false;
+    }
+    QJsonArray componentArray = componentArrayValue.toArray();
+
+    for (int i = 0; i < m_horiNumSquares; ++i)
+    {
+        for (int j = 0; j < m_vertNumSquares; ++j)
+        {
+            m_components[i][j] = addComponentDI(EmptyComponent, i, j, 0);
+        }
+    }
+    for (const QJsonValueRef& componentValref : componentArray)
+    {
+        if (!componentValref.isObject())
+        {
+            return false;
+        }
+        QJsonObject componentObject = componentValref.toObject();
+        int row = componentObject[ROW_NAME].toInt();
+        int col = componentObject[COL_NAME].toInt();
+        int ori = componentObject[ORIENTATION_NAME].toInt();
+        ComponentName name = persistenceNameToComponentName(componentObject[COMPONENT_NAME].toString().toStdString());
+        if (name != EmptyComponent)
+        {
+            m_components[row][col] = addComponentDI(name, row, col, ori);
+        }
+    }
+
+    return false;
 }

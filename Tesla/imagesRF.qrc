@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>Images/eraser.png</file>
         <file>Images/eraserTrans.png</file>
+        <file>Images/open_file_icon.png</file>
+        <file>Images/save_as_icon.png</file>
     </qresource>
 </RCC>

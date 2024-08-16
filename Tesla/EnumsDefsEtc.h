@@ -17,6 +17,7 @@ enum ComponentName
     Bulb,
     Diode,
     BJT,
+    Resistor
 };
 
 
@@ -31,6 +32,7 @@ enum MouseModes
     BulbMM,
     DiodeMM,
     BJTMM,
+    ResistorMM
 };
 
 enum RunMode
@@ -44,3 +46,32 @@ enum PhysicalQuantity
     Potential,
     Current,
 };
+
+static std::map<std::string, ComponentName> persistenceNameToComponentNameMap = {
+    {"EmptyComponent", EmptyComponent},
+    {"Wire" , Wire},
+    {"CornerWire" , CornerWire},
+    {"Fork" , Fork},
+    {"Battery" , Battery},
+    {"Bulb" , Bulb},
+    {"Diode" , Diode},
+    {"BJT" , BJT},
+    {"Resistor" , Resistor},
+};
+
+static ComponentName persistenceNameToComponentName(const std::string& persistenceName)
+{
+    return persistenceNameToComponentNameMap[persistenceName];
+}
+
+static std::string componentNameToPersistenceName(const ComponentName& componentName)
+{
+    for (const auto& [per, com] : persistenceNameToComponentNameMap)
+    {
+        if (com == componentName)
+        {
+            return per;
+        }
+    }
+    return "empty";
+}

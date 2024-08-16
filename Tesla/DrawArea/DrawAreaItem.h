@@ -49,6 +49,10 @@ public:
 
     bool getMinMaxValues(PhysicalQuantity quantity, double& min, double& max) const;
 
+    bool saveToFile(QJsonObject& res) const;
+
+    bool loadFromFile(const QJsonObject& object);
+
 private:
     void onItemSelected(int m, int n);
 
