@@ -46,7 +46,7 @@ std::vector<double> getSubVector(const Eigen::VectorXd& allVals, unsigned start,
     return retVal;
 }
 
-void NLSolver::compute()
+bool NLSolver::compute()
 {
     m_currents.clear();
     m_potentials.clear();
@@ -55,12 +55,14 @@ void NLSolver::compute()
     int numEqs   = numEdges + numNodes;
     if (numEqs == 0)
     {
-        return;
+        return false;
     }
 
     Eigen::VectorXd vals = Eigen::VectorXd::Zero(numEqs);
 
-    while (true)
+    int maxIters = 100;
+    int iter = 0;
+    for (; iter < maxIters; ++iter)
     {
         // Calculate f(val)
         Eigen::VectorXd y = Eigen::VectorXd::Zero(numEqs);
@@ -142,6 +144,20 @@ void NLSolver::compute()
         vals = vals - diff;
     }
 
+    //check if we've exceeded the number of allowed iterations
+    if (iter == maxIters)
+    {
+        return false;
+    }
+    //check if we have NaNs
+    for (const auto& val : vals)
+    {
+        if (val != val)
+        {
+            return false;
+        }
+    }
+
     m_currents.reserve(numEdges);
     for (int i=0; i<numEdges; ++i)
     {
@@ -155,6 +171,8 @@ void NLSolver::compute()
     // Make average potential equal to zero
     double meanOfPots = std::accumulate(m_potentials.begin(), m_potentials.end(), 0.) / m_potentials.size();
     std::for_each(m_potentials.begin(), m_potentials.end(), [meanOfPots](double& val){val -= meanOfPots;});
+
+    return true;
 }
 
 double NLSolver::getPotential(int i) const

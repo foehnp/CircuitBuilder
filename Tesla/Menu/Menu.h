@@ -18,11 +18,26 @@ public:
 
     void pushBackAction(MenuAction* menuAction);
 
+    void setIsAvailableGeneral(bool isOn);
+    bool isAvailableGeneral() const;
+
+    QString getFilePath() const
+    {
+        return m_filePath;
+    }
+    void setFilePath(const QString& filePath)
+    {
+        m_filePath = filePath;
+    }
+
 private:
     MainView* m_mainView = nullptr;
     double m_squareBreadth;
     std::vector<MenuAction*> m_toolboxItemList;
 
+    bool m_isAvailableGeneral;
+
     RunMode m_state = Drawing;
 
+    QString m_filePath;
 };

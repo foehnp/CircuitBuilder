@@ -2,15 +2,15 @@
 
 #include "MenuAction.h"
 
-class OpenAction : public MenuAction
+class SaveAction : public MenuAction
 {
 public:
-    OpenAction(double squareBreadth, Menu* parentMenu, MainView* mainView);
+    SaveAction(double squareBreadth, Menu* parentMenu, MainView* mainView);
 
 protected:
     QString getIconPath() const override
     {
-        return ":/Images/open_file_icon_transparent.png";
+        return ":/Images/save_icon_transparent.png";
     }
 
     void executeAction() override;
@@ -20,3 +20,4 @@ protected:
 private:
     QGraphicsPixmapItem* m_iconPixmapItem;
 };
+

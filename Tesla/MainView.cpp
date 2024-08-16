@@ -21,11 +21,11 @@
 
 #include <QWheelEvent>
 #include <QFile>
-#include <QTimer>
 #include <QGraphicsProxyWidget>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QMessageBox>
 
 #include <fstream>
 
@@ -71,19 +71,27 @@ MainView::MainView()
 
 void MainView::setCurrentRunMode(const RunMode &runMode)
 {
-    m_runMode = runMode;
-    m_drawArea->setCurrentRunMode(runMode);
-    m_controlPane->setState(runMode);
     if (runMode == Running)
     {
-        m_toolboxArea->setIsAvailable(false);
-        run();
+        if (!run())
+        {
+            QMessageBox::information(
+                this,
+                tr("Computation failed."),
+                tr("Computation failed. Maybe there is a short circuit or something, or the solver failed.") );
+            return;
+        }
     }
     else if (runMode == Drawing)
     {
-        m_toolboxArea->setIsAvailable(true);
         stop();
     }
+
+    m_runMode = runMode;
+    m_menu->setIsAvailableGeneral(runMode == Drawing);
+    m_toolboxArea->setIsAvailable(runMode == Drawing);
+    m_drawArea->setCurrentRunMode(runMode);
+    m_controlPane->setState(runMode);
 }
 
 RunMode MainView::getCurrentRunMode() const
@@ -122,19 +130,22 @@ void MainView::wheelEvent(QWheelEvent *event)
     }
 }
 
-void MainView::run()
+bool MainView::run()
 {
-//    m_drawArea->constructSolver();
     m_drawArea->constructNLSolver();
-    updateValues();
-    m_runTimer = new QTimer(this);
-    connect(m_runTimer, &QTimer::timeout, this, &MainView::updateValues);
+    if (!updateValues())
+    {
+        return false;
+    }
+    m_runTimer = std::make_unique<QTimer>(this);
+    connect(&*m_runTimer, &QTimer::timeout, this, &MainView::updateValues);
     m_runTimer->start(500);
+    return true;
 }
 
 void MainView::stop()
 {
-    delete m_runTimer;
+    m_runTimer.reset();
 }
 
 void MainView::autoAdjustScale(PhysicalQuantity quantity)
@@ -199,9 +210,9 @@ bool MainView::loadFromFile(const QString& path)
     return true;
 }
 
-void MainView::updateValues()
+bool MainView::updateValues()
 {
-    m_drawArea->updateValues();
+    return m_drawArea->updateValues();
 }
 
 void MainView::initializeDrawArea()

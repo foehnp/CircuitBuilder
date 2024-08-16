@@ -59,7 +59,7 @@ public:
 
     void addElement(const NLSolverElement& element);
 
-    void compute();
+    bool compute();
 
     double getPotential(int i) const;
     double getCurrent(int i) const;

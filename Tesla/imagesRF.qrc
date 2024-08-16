@@ -4,5 +4,7 @@
         <file>Images/eraserTrans.png</file>
         <file>Images/open_file_icon.png</file>
         <file>Images/save_as_icon.png</file>
+        <file>Images/open_file_icon_transparent.png</file>
+        <file>Images/save_icon_transparent.png</file>
     </qresource>
 </RCC>

@@ -45,7 +45,7 @@ public:
 
     void constructNLSolver();
 
-    void updateValues();
+    bool updateValues();
 
     bool getMinMaxValues(PhysicalQuantity quantity, double& min, double& max) const;
 

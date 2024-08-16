@@ -23,6 +23,7 @@ SOURCES += \
         Menu/Menu.cpp \
         Menu/MenuAction.cpp \
         Menu/OpenAction.cpp \
+        Menu/SaveAction.cpp \
         Menu/SaveAsAction.cpp \
         Scale/ScaleWidget.cpp \
         Scale/ScaleCollection.cpp \
@@ -64,6 +65,7 @@ HEADERS += \
     Menu/Menu.h \
     Menu/MenuAction.h \
     Menu/OpenAction.h \
+    Menu/SaveAction.h \
     Menu/SaveAsAction.h \
     Scale/ScaleWidget.h \
     Scale/ScaleCollection.h \

@@ -15,9 +15,12 @@ public:
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
+
 protected:
     virtual QString getIconPath() const = 0;
     virtual void executeAction() = 0;
+
+    virtual bool isAvailable() const = 0;
 
 private:
     double m_squareBreadth;

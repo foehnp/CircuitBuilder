@@ -3,6 +3,7 @@
 #include <EnumsDefsEtc.h>
 
 #include <QGraphicsView>
+#include <QTimer>
 
 class Menu;
 class DrawAreaItem;
@@ -28,7 +29,7 @@ public:
 
     void wheelEvent(QWheelEvent* event) override;
 
-    void run();
+    bool run();
     void stop();
 
     void autoAdjustScale(PhysicalQuantity quantity);
@@ -40,7 +41,7 @@ public:
 private:
     void initializeDrawArea();
     void initializeToolboxArea();
-    void updateValues();
+    bool updateValues();
 
 private:
     QGraphicsScene* m_scene;
@@ -60,7 +61,8 @@ private:
 
     RunMode m_runMode = Drawing;
 
-    QTimer* m_runTimer;
+    std::unique_ptr<QTimer> m_runTimer;
 
     std::shared_ptr<ScaleCollection> m_scaleCollection;
+
 };

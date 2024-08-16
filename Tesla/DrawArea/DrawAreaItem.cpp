@@ -366,11 +366,14 @@ void DrawAreaItem::constructNLSolver()
     }
 }
 
-void DrawAreaItem::updateValues()
+bool DrawAreaItem::updateValues()
 {
-//    m_solver->compute();
-    m_NLsolver->compute();
+    if (!m_NLsolver->compute())
+    {
+        return false;
+    }
     update();
+    return true;
 }
 
 bool DrawAreaItem::getMinMaxValues(PhysicalQuantity quantity, double &min, double &max) const

@@ -2,6 +2,9 @@
 
 #include <QGraphicsSceneMouseEvent>
 
+#include <QPainter>
+#include <QPen>
+
 MenuAction::MenuAction(double squareBreadth, Menu* parentMenu, MainView* mainView) :
     m_squareBreadth(squareBreadth),
     m_parentMenu(parentMenu),
@@ -17,17 +20,23 @@ QRectF MenuAction::boundingRect() const
 
 void MenuAction::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QPixmap pM(getIconPath());
-    pM.scaledToHeight(m_squareBreadth);
-    m_iconPixmapItem = new QGraphicsPixmapItem(pM);
-    QRectF rect = m_iconPixmapItem->boundingRect();
-    m_iconPixmapItem->setScale(m_squareBreadth / rect.height());
-    m_iconPixmapItem->setPos(0., 0.);
-    m_iconPixmapItem->setParentItem(this);
+    //paint background
+    QColor backgroundColor = isAvailable() ? Qt::white : Qt::gray;
+    QPen pen;
+    pen.setColor(backgroundColor);
+    QBrush brush(backgroundColor);
+    painter->setBrush(brush);
+    painter->setPen(pen);
+    painter->drawRect(QRectF(0., 0., m_squareBreadth, m_squareBreadth));
+
 }
 
 void MenuAction::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     event->accept();
+    if (!isAvailable())
+    {
+        return;
+    }
     executeAction();
 }
