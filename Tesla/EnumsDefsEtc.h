@@ -23,6 +23,7 @@ enum ComponentName
 
 enum MouseModes
 {
+    RunningMM,
     NeutralMM,
     EraserMM,
     WireMM,

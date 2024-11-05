@@ -32,10 +32,6 @@ QRectF ToolboxArea::boundingRect() const
 
 void ToolboxArea::setSelectedItem(int index)
 {
-    if (index == m_currSelected)
-    {
-        return;
-    }
     m_currSelected = index;
     for (int i = 0; i < m_toolboxItemList.size(); ++i)
     {
@@ -96,7 +92,7 @@ void ToolboxArea::setIsAvailable(bool isAvailable)
 
     if (!isAvailable)
     {
-        m_mainView->setCurrentMouseMode(MouseModes::NeutralMM);
+        m_mainView->setCurrentMouseMode(MouseModes::RunningMM);
     }
     else
     {

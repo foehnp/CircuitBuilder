@@ -1,6 +1,7 @@
 #include "ComponentDI.h"
 
 #include <EnumsDefsEtc.h>
+#include "ParamDialog.h"
 
 #include <QPen>
 #include <QGraphicsSceneMouseEvent>
@@ -73,6 +74,19 @@ void ComponentDI::setSolver(const std::shared_ptr<Solver> &solver)
 void ComponentDI::setNLSolver(const std::shared_ptr<NLSolver> &NLsolver)
 {
     m_NLsolver = NLsolver;
+}
+
+void ComponentDI::runParamDialog()
+{
+    if (m_userParams.empty())
+    {
+        return;
+    }
+    ParamDialog dialog(m_userParams);
+    if (dialog.exec())
+    {
+        m_userParams = dialog.getEditedParams();
+    }
 }
 
 void ComponentDI::paintArrow(QPainter *painter, const QPointF &pos, const double &height, const QColor& color, int orientation)

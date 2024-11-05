@@ -7,7 +7,7 @@
 BulbDI::BulbDI(double squareBreadth, double thickness, int orientation) :
     ComponentDI(squareBreadth, orientation)
 {
-
+    m_userParams.emplace_back("Resistance", 10., 0.01, 1000, 2, "Ohm");
 }
 
 void BulbDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -24,7 +24,7 @@ void BulbDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *opti
     }
     else
     {
-        int r = 255 - (int)(std::min(1., 50.*std::pow(m_NLsolver->getCurrent(m_edge), 2)) * 255);
+        int r = 255 - (int)(std::min(1., m_userParams[0].val * 5. * std::pow(m_NLsolver->getCurrent(m_edge), 2)) * 255);
         bulbColor = QColor(255, 255, r);
 
         if (m_displaySettings->getCurrentQuantity() == Potential)
@@ -82,11 +82,12 @@ std::vector<NLSolverElement> BulbDI::getNLSolverElements()
     nodes.push_back(m_leftOuterNode); nodes.push_back(m_rightOuterNode);
     std::vector<unsigned> edges;
     edges.push_back(m_edge);
-    DoubleFunction equation = [](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return nodePotentials[1] - nodePotentials[0] - edgeCurrents[0] * 10.;};
+    double R = m_userParams[0].val;
+    DoubleFunction equation = [R](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return nodePotentials[1] - nodePotentials[0] - edgeCurrents[0] * R;};
     std::vector<DoubleFunction> edgeDerivatives, nodeDerivatives;
-    edgeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                            {return -10.;});
+    edgeDerivatives.push_back([R](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                            {return -R;});
     nodeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return -1.;});
     nodeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)

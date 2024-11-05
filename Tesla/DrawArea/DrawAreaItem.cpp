@@ -138,9 +138,13 @@ void DrawAreaItem::onItemSelected(int m, int n)
     int mouseOrientation = m_mainView->getCurrentMouseOrientation();
 
     MouseModes mouseMode = m_mainView->getCurrentMouseMode();
-    if (mouseMode == MouseModes::NeutralMM)
+    if (mouseMode == MouseModes::RunningMM)
     {
         return;
+    }
+    else if (mouseMode == MouseModes::NeutralMM)
+    {
+        m_components[m][n]->runParamDialog();
     }
     else if (mouseMode == MouseModes::EraserMM)
     {

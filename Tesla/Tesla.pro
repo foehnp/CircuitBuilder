@@ -17,6 +17,7 @@ SOURCES += \
         DrawArea/DrawAreaItem.cpp \
         DrawArea/EmptyComponentDI.cpp \
         DrawArea/ForkDI.cpp \
+        DrawArea/ParamDialog.cpp \
         DrawArea/ResistorDI.cpp \
         DrawArea/WireDI.cpp \
         MainView.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
     DrawArea/DrawAreaItem.h \
     DrawArea/EmptyComponentDI.h \
     DrawArea/ForkDI.h \
+    DrawArea/ParamDialog.h \
     DrawArea/ResistorDI.h \
     DrawArea/WireDI.h \
     EnumsDefsEtc.h \

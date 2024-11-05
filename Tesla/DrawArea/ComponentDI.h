@@ -6,10 +6,31 @@
 #include <QGraphicsItem>
 #include <EnumsDefsEtc.h>
 
+#include <limits>
 #include <memory>
+#include <string>
 
 class QJsonObject;
 class ScaleCollection;
+
+struct ComponentParam
+{
+    QString displayName;
+    double val = 0.;
+    double minVal = 0.;
+    double maxVal = std::numeric_limits<double>::max();
+    double decimals = 2;
+    QString unit;
+    ComponentParam(const QString& displayName, double val, double minVal, double maxVal, unsigned decimals, const QString& unit) :
+        displayName(displayName),
+        val(val),
+        minVal(minVal),
+        maxVal(maxVal),
+        decimals(decimals),
+        unit(unit)
+    {
+    }
+};
 
 
 class ComponentDI : public QGraphicsItem
@@ -48,6 +69,8 @@ public:
 
     virtual ComponentName getComponentName() const = 0;
 
+    void runParamDialog();
+
 private:
     void paintBackground(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;
@@ -60,6 +83,8 @@ protected:
     int m_orientation;
 
     RunMode m_runMode = Drawing;
+
+    std::vector<ComponentParam> m_userParams;
 
     std::shared_ptr<ScaleCollection> m_displaySettings;
     std::shared_ptr<Solver> m_solver;
