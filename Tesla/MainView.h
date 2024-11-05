@@ -54,7 +54,7 @@ private:
 
 
     double m_squareBreadth = 50.;
-    int m_horiNumSquares = 6, m_vertNumSquares = 8;
+    int m_horiNumSquares = 10, m_vertNumSquares = 10;
 
     MouseModes m_currentMouseMode = MouseModes::NeutralMM;
     int m_currentMouseOrientation = 0;
