@@ -176,6 +176,8 @@ bool MainView::saveToFile(const QString& path) const
     std::ofstream ofs(path.toStdString());
     ofs << byteArray.toStdString();
     ofs.close();
+
+    m_menu->setFilePath(path);
     return true;
 }
 
@@ -207,6 +209,7 @@ bool MainView::loadFromFile(const QString& path)
     {
         return false;
     }
+    m_menu->setFilePath(path);
     return true;
 }
 
