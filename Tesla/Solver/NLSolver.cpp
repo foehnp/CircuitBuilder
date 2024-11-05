@@ -52,7 +52,8 @@ bool NLSolver::compute()
     m_potentials.clear();
     int numEdges = m_edges.size();
     int numNodes = m_nodes.size();
-    int numEqs   = numEdges + numNodes;
+    int numElements = m_solverElements.size();
+    int numEqs   = numElements + numNodes;
     if (numEqs == 0)
     {
         return false;
@@ -75,7 +76,7 @@ bool NLSolver::compute()
         }
         for (int i=0; i<numNodes/* - 1*/; ++i)
         {
-            int rowIdx = numEdges + i;
+            int rowIdx = numElements + i;
             for (const auto& edge : m_nodes[i].incidentEdges)
             {
                 y(rowIdx) += edge.first * vals(edge.second);
@@ -108,7 +109,7 @@ bool NLSolver::compute()
         }
         for (int i=0; i<numNodes/* - 1*/; ++i)
         {
-            int rowIdx = numEdges + i;
+            int rowIdx = numElements + i;
             for (const auto& edge : m_nodes[i].incidentEdges)
             {
                 J(rowIdx, edge.second) = edge.first;
