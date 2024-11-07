@@ -26,6 +26,7 @@ SOURCES += \
         Menu/OpenAction.cpp \
         Menu/SaveAction.cpp \
         Menu/SaveAsAction.cpp \
+        Scale/ScaleGraphicsItem.cpp \
         Scale/ScaleWidget.cpp \
         Scale/ScaleCollection.cpp \
         Solver/NLSolver.cpp \
@@ -69,6 +70,7 @@ HEADERS += \
     Menu/OpenAction.h \
     Menu/SaveAction.h \
     Menu/SaveAsAction.h \
+    Scale/ScaleGraphicsItem.h \
     Scale/ScaleWidget.h \
     Scale/ScaleCollection.h \
     Solver/NLSolver.h \

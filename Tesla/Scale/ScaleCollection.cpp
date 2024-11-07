@@ -64,17 +64,42 @@ const std::map<PhysicalQuantity, ScaleCollection::Scale> &ScaleCollection::getAl
 
 QColor ScaleCollection::getColor(const ScaleCollection::Scale &scale, const double &value) const
 {
-    if (value <= scale.m_scaleMin)
-    {
-        return QColor(0, 0, 255);
-    }
-    else if (value > scale.m_scaleMax)
-    {
-        return QColor(255, 0, 0);
-    }
-    else
-    {
-        int scaledValue = (int)((value - scale.m_scaleMin) * 255. / (scale.m_scaleMax - scale.m_scaleMin));
-        return QColor(scaledValue, 0, 255 - scaledValue);
-    }
+    double scaledValue = (value - scale.m_scaleMin) / (scale.m_scaleMax - scale.m_scaleMin);
+    return getColorScaleFunc()(scaledValue);
+}
+
+ColorFunction ScaleCollection::getColorScaleFunc() const
+{
+    ColorFunction colorFunc = [](double param){
+        if (param <= 0.)
+        {
+            return QColor(0, 0, 255);
+        }
+        else if (param >= 1.)
+        {
+            return QColor(255, 0, 0);
+        }
+        else if (param < 0.25)
+        {
+            unsigned char charParam = (unsigned char)(param * 1024);
+            return QColor(255, charParam, 0);
+        }
+        else if (param < 0.5)
+        {
+            unsigned char charParam = (unsigned char)((param-0.25) * 1024);
+            return QColor(255-charParam, 255, 0);
+        }
+        else if (param < 0.75)
+        {
+            unsigned char charParam = (unsigned char)((param-0.5) * 1024);
+            return QColor(0, 255, charParam);
+        }
+        else
+        {
+            unsigned char charParam = (unsigned char)((param-0.75) * 1024);
+            return QColor(0, 255-charParam, 255);
+        }
+    };
+
+    return colorFunc;
 }

@@ -4,6 +4,8 @@
 
 #include <map>
 
+typedef std::function<QColor(double)> ColorFunction;
+
 class ScaleCollection
 {
 public:
@@ -42,6 +44,7 @@ public:
 
     const std::map<PhysicalQuantity, Scale>& getAllScales() const;
 
+    ColorFunction getColorScaleFunc() const;
 private:
     QColor getColor(const Scale& scale, const double& value) const;
 

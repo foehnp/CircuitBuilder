@@ -17,6 +17,7 @@
 #include <Toolbox/BJTTI.h>
 
 #include <Scale/ScaleCollection.h>
+#include <Scale/ScaleGraphicsItem.h>
 #include <Scale/ScaleWidget.h>
 
 #include <QWheelEvent>
@@ -59,10 +60,16 @@ MainView::MainView()
     m_scaleCollection->setScale(Potential, -1., 1., "Potential");
     m_scaleCollection->setScale(Current, 0., 0.01, "Current");
     m_scaleCollection->setCurrentQuantity(Potential);
-    m_scaleWidget = new ScaleWidget(m_squareBreadth, m_scaleCollection, this);
+    m_scaleGraphicsItem = new ScaleGraphicsItem(m_squareBreadth*0.3, m_squareBreadth*1.5);
+    m_scene->addItem(m_scaleGraphicsItem);
+    m_scaleGraphicsItem->setScale(m_scaleCollection->getColorScaleFunc());
+    pos = m_controlPane->boundingRect().topRight() + m_controlPane->pos() + QPointF(m_squareBreadth*0.4, 0.);
+    m_scaleGraphicsItem->setPos(pos);
+
+    m_scaleWidget = new ScaleWidget(m_squareBreadth*1.5, m_scaleCollection, this);
     QGraphicsProxyWidget * proxyWidget = m_scene->addWidget(m_scaleWidget);
-    pos = m_controlPane->boundingRect().topRight() + m_controlPane->pos();
-    proxyWidget->setPos(pos.x() + m_squareBreadth*0.2, pos.y());
+    pos = m_scaleGraphicsItem->boundingRect().topRight() + m_scaleGraphicsItem->pos() + QPointF(m_squareBreadth*0.1, 0.);
+    proxyWidget->setPos(pos);
     proxyWidget->setZValue(1);
     m_drawArea->setDisplaySettings(m_scaleCollection);
 

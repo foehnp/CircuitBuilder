@@ -1,36 +1,40 @@
 #include "ScaleWidget.h"
 
-#include <QDoubleSpinBox>
+#include <QLineEdit>
 #include <QComboBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QGraphicsLayoutItem>
 
 #include "MainView.h"
 #include "ScaleCollection.h"
 
-ScaleWidget::ScaleWidget(double breadth, std::weak_ptr<ScaleCollection> scaleCollection, MainView* mainView) :
-    m_breadth(breadth),
+#include <limits>
+
+
+ScaleWidget::ScaleWidget(double height, std::weak_ptr<ScaleCollection> scaleCollection, MainView* mainView) :
+    m_height(height),
     m_scaleCollection(scaleCollection),
     m_mainView(mainView)
 {
+    setFixedHeight(m_height);
     QHBoxLayout *hlayout = new QHBoxLayout(this);
-    QVBoxLayout *leftVlayout = new QVBoxLayout(this);
-    hlayout->addLayout(leftVlayout);
+    QVBoxLayout *colorScaleVLayout = new QVBoxLayout(this);
+    hlayout->addLayout(colorScaleVLayout);
+    QVBoxLayout *inputVLayout = new QVBoxLayout(this);
+    hlayout->addLayout(inputVLayout);
     QVBoxLayout *righttVlayout = new QVBoxLayout(this);
     hlayout->addLayout(righttVlayout);
-    m_upperLimitSpinBox = new QDoubleSpinBox();
-    m_upperLimitSpinBox->setDecimals(4);
-    m_upperLimitSpinBox->setMinimum(0.);
-    m_upperLimitSpinBox->setMaximum(10.);
-    m_upperLimitSpinBox->setSingleStep(0.0001);
-    m_lowerLimitSpinBox = new QDoubleSpinBox();
-    m_lowerLimitSpinBox->setDecimals(4);
-    m_lowerLimitSpinBox->setMinimum(-10.);
-    m_lowerLimitSpinBox->setMaximum(0.);
-    m_lowerLimitSpinBox->setSingleStep(0.0001);
-    leftVlayout->addWidget(m_upperLimitSpinBox);
-    leftVlayout->addWidget(m_lowerLimitSpinBox);
+
+
+    m_upperLimitLineEdit = new QLineEdit();
+    m_lowerLimitLineEdit = new QLineEdit();
+    m_upperLimitLineEdit->setValidator(new QDoubleValidator(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 3, this) );
+    m_lowerLimitLineEdit->setValidator(new QDoubleValidator(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 3, this) );
+    inputVLayout->addWidget(m_upperLimitLineEdit);
+    inputVLayout->addWidget(m_lowerLimitLineEdit);
+
     m_physicalQuantityBox = new QComboBox();
     righttVlayout->addWidget(m_physicalQuantityBox);
     m_adjustScaleButton = new QPushButton();
@@ -49,7 +53,7 @@ void ScaleWidget::on_upperLimitSpinBox_valueChanged()
         return;
     }
     PhysicalQuantity& currentQuantity = m_quantities[m_physicalQuantityBox->currentIndex()];
-    collection->setScaleMax(currentQuantity, m_upperLimitSpinBox->value());
+    collection->setScaleMax(currentQuantity, m_upperLimitLineEdit->text().toDouble());
     updateSpinBoxesFromCollection();
 }
 
@@ -61,7 +65,7 @@ void ScaleWidget::on_lowerLimitSpinBox_valueChanged()
         return;
     }
     PhysicalQuantity& currentQuantity = m_quantities[m_physicalQuantityBox->currentIndex()];
-    collection->setScaleMin(currentQuantity, m_lowerLimitSpinBox->value());
+    collection->setScaleMin(currentQuantity, m_lowerLimitLineEdit->text().toDouble());
     updateSpinBoxesFromCollection();
 }
 
@@ -107,8 +111,8 @@ void ScaleWidget::fillFromScaleCollection()
         if (quantity == currentQuantity)
         {
             m_physicalQuantityBox->setCurrentIndex(m_quantities.size() - 1);
-            m_upperLimitSpinBox->setValue(scale.m_scaleMax);
-            m_lowerLimitSpinBox->setValue(scale.m_scaleMin);
+            m_upperLimitLineEdit->setText(QString::number(scale.m_scaleMax, 'f', 3));
+            m_lowerLimitLineEdit->setText(QString::number(scale.m_scaleMin, 'f', 3));
         }
     }
 
@@ -124,14 +128,14 @@ void ScaleWidget::updateSpinBoxesFromCollection()
     PhysicalQuantity currentQuantity = collection->getCurrentQuantity();
     auto scaleMap = collection->getAllScales();
     ScaleCollection::Scale currentScale = scaleMap[currentQuantity];
-    m_upperLimitSpinBox->setValue(currentScale.m_scaleMax);
-    m_lowerLimitSpinBox->setValue(currentScale.m_scaleMin);
+    m_upperLimitLineEdit->setText(QString::number(currentScale.m_scaleMax, 'f', 3));
+    m_lowerLimitLineEdit->setText(QString::number(currentScale.m_scaleMin, 'f', 3));
 }
 
 void ScaleWidget::makeInternalConnections()
 {
     connect(m_physicalQuantityBox, &QComboBox::currentIndexChanged,  this, &ScaleWidget::on_physicalQuantityBox_currentIndexChanged);
-    connect(m_upperLimitSpinBox, &QDoubleSpinBox::valueChanged,  this, &ScaleWidget::on_upperLimitSpinBox_valueChanged);
-    connect(m_lowerLimitSpinBox, &QDoubleSpinBox::valueChanged,  this, &ScaleWidget::on_lowerLimitSpinBox_valueChanged);
+    connect(m_upperLimitLineEdit, &QLineEdit::editingFinished,  this, &ScaleWidget::on_upperLimitSpinBox_valueChanged);
+    connect(m_lowerLimitLineEdit, &QLineEdit::editingFinished,  this, &ScaleWidget::on_lowerLimitSpinBox_valueChanged);
     connect(m_adjustScaleButton, &QPushButton::clicked,  this, &ScaleWidget::on_adjustScaleButton_clicked);
 }

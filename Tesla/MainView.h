@@ -5,6 +5,7 @@
 #include <QGraphicsView>
 #include <QTimer>
 
+class ScaleGraphicsItem;
 class Menu;
 class DrawAreaItem;
 class ToolboxArea;
@@ -50,6 +51,7 @@ private:
     DrawAreaItem* m_drawArea;
     ToolboxArea* m_toolboxArea;
     ControlPane* m_controlPane;
+    ScaleGraphicsItem* m_scaleGraphicsItem;
     ScaleWidget* m_scaleWidget;
 
 

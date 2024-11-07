@@ -11,13 +11,13 @@
 class MainView;
 class ScaleCollection;
 class QComboBox;
-class QDoubleSpinBox;
+class QLineEdit;
 class QPushButton;
 
 class ScaleWidget : public QWidget
 {
 public:
-    ScaleWidget(double breadth, std::weak_ptr<ScaleCollection> scaleCollection, MainView* mainView);
+    ScaleWidget(double height, std::weak_ptr<ScaleCollection> scaleCollection, MainView* mainView);
 
 public slots:
     void on_upperLimitSpinBox_valueChanged();
@@ -33,14 +33,14 @@ private:
     void makeInternalConnections();
 
 private:
-    double m_breadth;
+    double m_height;
 
     std::weak_ptr<ScaleCollection> m_scaleCollection;
 
     MainView* m_mainView;
 
-    QDoubleSpinBox* m_upperLimitSpinBox;
-    QDoubleSpinBox* m_lowerLimitSpinBox;
+    QLineEdit* m_upperLimitLineEdit;
+    QLineEdit* m_lowerLimitLineEdit;
     QComboBox* m_physicalQuantityBox;
     QPushButton* m_adjustScaleButton;
 
