@@ -9,6 +9,7 @@ BatteryDI::BatteryDI(double squareBreadth, double thickness, int orientation) :
     ComponentDI(squareBreadth, orientation),
     m_wireThickness(thickness)
 {
+    m_userParams.emplace_back("Voltage", 1., 0.001, 1000, 3, "V");
 }
 
 void BatteryDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -18,6 +19,9 @@ void BatteryDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *o
     double gapThickness = m_squareBreadth * m_gapThickness;
     double leftHeight = m_squareBreadth * m_leftHeight;
     double rightHeight = m_squareBreadth * m_rightHeigt;
+    double signHeight = m_squareBreadth * 0.15;
+    double leftSignX = -m_squareBreadth * 0.35;
+    double rightSignX = m_squareBreadth * 0.1;
 
     QColor leftColor, rightColor;
     if (m_runMode == Drawing)
@@ -41,9 +45,21 @@ void BatteryDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *o
     painter->setBrush(leftColor);
     painter->drawRect(QRectF(-halfBreadth, - wireThickness*0.5, halfBreadth - 0.5*gapThickness - wireThickness, wireThickness));
     painter->drawRect(QRectF(-0.5*gapThickness - wireThickness, -leftHeight*0.5, wireThickness, leftHeight));
+
+    painter->setPen(QPen(leftColor));
+    QFont font = painter->font();
+    font.setPointSizeF(12.);
+    font.setBold(true);
+    painter->setFont(font);
+    painter->drawText(QPointF(leftSignX, -signHeight), QString("+"));
+
+    painter->setPen(QPen(Qt::PenStyle::NoPen));
     painter->setBrush(rightColor);
     painter->drawRect(QRectF(0.5*gapThickness + wireThickness, - wireThickness*0.5,  halfBreadth - 0.5*gapThickness - wireThickness, wireThickness));
     painter->drawRect(QRectF(0.5*gapThickness, -rightHeight*0.5, wireThickness, rightHeight));
+
+    painter->setPen(QPen(rightColor));
+    painter->drawText(QPointF(rightSignX, -signHeight), QString("-"));
 }
 
 std::vector<int *> BatteryDI::getAllInnerNodes()

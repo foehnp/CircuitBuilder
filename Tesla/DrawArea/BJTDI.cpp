@@ -18,6 +18,12 @@ void BJTDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *optio
     double halfThickness = 0.5 * m_thickness * m_squareBreadth;
     double halfSquareBreadth = 0.5 * m_squareBreadth;
 
+    // for the labels
+    QFont font = painter->font();
+    font.setPointSizeF(7.);
+    font.setBold(true);
+    painter->setFont(font);
+
     QColor baseColor, collectorColor, emitterColor;
     if (m_runMode == Drawing)
     {
@@ -38,9 +44,12 @@ void BJTDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *optio
         }
         else if (m_displaySettings->getCurrentQuantity() == Current)
         {
-            baseColor = m_displaySettings->getColorFromCurrentScale(std::abs(m_NLsolver->getCurrent(m_baseEdge)));
-            collectorColor = m_displaySettings->getColorFromCurrentScale(std::abs(m_NLsolver->getCurrent(m_collectorEdge)));
-            emitterColor = m_displaySettings->getColorFromCurrentScale(std::abs(m_NLsolver->getCurrent(m_emitterEdge)));
+            double em_cur = m_NLsolver->getCurrent(m_emitterEdge);
+            double co_cur = m_NLsolver->getCurrent(m_collectorEdge);
+            double base_cur = em_cur - co_cur;
+            baseColor = m_displaySettings->getColorFromCurrentScale(std::abs(base_cur));
+            collectorColor = m_displaySettings->getColorFromCurrentScale(std::abs(co_cur));
+            emitterColor = m_displaySettings->getColorFromCurrentScale(std::abs(em_cur));
         }
     }
 
@@ -50,6 +59,9 @@ void BJTDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->setPen(QPen(Qt::PenStyle::NoPen));
         painter->setBrush(baseColor);
         painter->drawRect(QRectF(-halfSquareBreadth, - halfThickness, halfSquareBreadth*0.5 - halfThickness*3., 2*halfThickness));
+
+        painter->setPen(baseColor);
+        painter->drawText(QPointF(-m_squareBreadth * 0.45, -m_squareBreadth * 0.05), QString("B"));
     }
     {
         // Semiconductior wire
@@ -75,6 +87,9 @@ void BJTDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *optio
                                  {-halfSquareBreadth*0.5 - halfThickness, -halfSquareBreadth*0.2 - halfThickness*2.83}});
         QPolygonF diagLine(points);
         painter->drawPolygon(diagLine);
+
+        painter->setPen(collectorColor);
+        painter->drawText(QPointF(-m_squareBreadth * 0.1, -m_squareBreadth * 0.1), QString("C"));
     }
     {
         // Bottom wire
@@ -94,6 +109,9 @@ void BJTDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *optio
                                  {-halfSquareBreadth*0.5 - halfThickness, halfSquareBreadth*0.2 + halfThickness*2.83}});
         QPolygonF diagLine(points);
         painter->drawPolygon(diagLine);
+
+        painter->setPen(emitterColor);
+        painter->drawText(QPointF(-m_squareBreadth * 0.1, m_squareBreadth * 0.2), QString("E"));
     }
 
 
