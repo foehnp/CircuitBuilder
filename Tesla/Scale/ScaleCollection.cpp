@@ -71,13 +71,14 @@ QColor ScaleCollection::getColor(const ScaleCollection::Scale &scale, const doub
 ColorFunction ScaleCollection::getColorScaleFunc() const
 {
     ColorFunction colorFunc = [](double param){
+        param = 1. - param;
         if (param <= 0.)
         {
-            return QColor(0, 0, 255);
+            return QColor(255, 0, 0);
         }
         else if (param >= 1.)
         {
-            return QColor(255, 0, 0);
+            return QColor(0, 0, 255);
         }
         else if (param < 0.25)
         {

@@ -17,7 +17,7 @@ void ScaleGraphicsItem::setScale(const ColorFunction& colorFunc)
     double stepDelta = 1. / m_steps;
     for (int i = 0; i < m_steps; ++i)
     {
-        m_colors[i] = colorFunc((i+0.5) * stepDelta);
+        m_colors[m_steps - i - 1] = colorFunc((i+0.5) * stepDelta);
     }
 }
 

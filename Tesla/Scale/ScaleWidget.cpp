@@ -135,7 +135,7 @@ void ScaleWidget::updateSpinBoxesFromCollection()
 void ScaleWidget::makeInternalConnections()
 {
     connect(m_physicalQuantityBox, &QComboBox::currentIndexChanged,  this, &ScaleWidget::on_physicalQuantityBox_currentIndexChanged);
-    connect(m_upperLimitLineEdit, &QLineEdit::editingFinished,  this, &ScaleWidget::on_upperLimitSpinBox_valueChanged);
-    connect(m_lowerLimitLineEdit, &QLineEdit::editingFinished,  this, &ScaleWidget::on_lowerLimitSpinBox_valueChanged);
+    connect(m_upperLimitLineEdit, &QLineEdit::textEdited,  this, &ScaleWidget::on_upperLimitSpinBox_valueChanged);
+    connect(m_lowerLimitLineEdit, &QLineEdit::textEdited,  this, &ScaleWidget::on_lowerLimitSpinBox_valueChanged);
     connect(m_adjustScaleButton, &QPushButton::clicked,  this, &ScaleWidget::on_adjustScaleButton_clicked);
 }
