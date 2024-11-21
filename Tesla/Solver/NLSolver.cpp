@@ -74,7 +74,7 @@ bool NLSolver::compute()
             std::vector<double> nodeArguments = getSubVector(vals, numEdges, element.nodes);
             y(i) = element.equation(edgeArguments, nodeArguments);
         }
-        for (int i=0; i<numNodes/* - 1*/; ++i)
+        for (int i=0; i<numNodes; ++i)
         {
             int rowIdx = numElements + i;
             for (const auto& edge : m_nodes[i].incidentEdges)
@@ -107,7 +107,7 @@ bool NLSolver::compute()
                 J(i, numEdges + element.nodes[j]) = element.nodeDerivatives[j](edgeArguments, nodeArguments);
             }
         }
-        for (int i=0; i<numNodes/* - 1*/; ++i)
+        for (int i=0; i<numNodes; ++i)
         {
             int rowIdx = numElements + i;
             for (const auto& edge : m_nodes[i].incidentEdges)
