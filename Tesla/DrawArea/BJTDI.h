@@ -33,11 +33,8 @@ private:
     int m_collectorNode = -1; // right
     int m_baseNode = -1; // bottom
 
-    int m_midNode = -1;
-
     int m_emitterEdge = -1;
     int m_collectorEdge = -1;
-    int m_baseEdge = -1;
 };
 
 #endif // BJTDI_H
