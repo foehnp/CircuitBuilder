@@ -92,7 +92,7 @@ std::vector<NLSolverElement> BulbDI::getNLSolverElements()
                             {return -1.;});
     nodeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return 1.;});
-    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives);
+    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "Bulb");
 
     return res;
 }

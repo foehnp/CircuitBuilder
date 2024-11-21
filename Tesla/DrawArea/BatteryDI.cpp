@@ -88,12 +88,15 @@ void BatteryDI::resetEdges()
 std::vector<NLSolverElement> BatteryDI::getNLSolverElements()
 {
     std::vector<NLSolverElement> res;
+
+    const double V = m_userParams[0].val;
+
     std::vector<unsigned> nodes;
     nodes.push_back(m_leftOuterNode); nodes.push_back(m_rightOuterNode);
     std::vector<unsigned> edges;
     edges.push_back(m_edge);
-    DoubleFunction equation = [](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return nodePotentials[1] - nodePotentials[0] - 1.;};
+    DoubleFunction equation = [V](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return nodePotentials[1] - nodePotentials[0] - V;};
     std::vector<DoubleFunction> edgeDerivatives, nodeDerivatives;
     edgeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return 0.;});
@@ -101,7 +104,7 @@ std::vector<NLSolverElement> BatteryDI::getNLSolverElements()
                             {return -1.;});
     nodeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return 1.;});
-    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives);
+    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "Battery");
 
     return res;
 }

@@ -31,6 +31,11 @@ void WireDI::paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *opti
         }
         else if (m_displaySettings->getCurrentQuantity() == Current)
         {
+            double debugVal = std::abs(m_NLsolver->getCurrent(m_edge));
+            if (debugVal <= 0.01)
+            {
+                int debugBreak = 0;
+            }
             color = m_displaySettings->getColorFromCurrentScale(std::abs(m_NLsolver->getCurrent(m_edge)));
         }
     }
@@ -97,7 +102,7 @@ std::vector<NLSolverElement> WireDI::getNLSolverElements()
                             {return -1.;});
     nodeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return 1.;});
-    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives);
+    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "Wire");
 
     return res;
 }

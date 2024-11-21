@@ -73,7 +73,7 @@ std::vector<NLSolverElement> CornerWireDI::getNLSolverElements()
                             {return -1.;});
     nodeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return 1.;});
-    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives);
+    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "CornerWire");
 
     return res;
 }

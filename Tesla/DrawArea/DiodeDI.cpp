@@ -110,13 +110,18 @@ std::vector<NLSolverElement> DiodeDI::getNLSolverElements()
 
     DoubleFunction equation = [reverseCurrent, thermalVoltage](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                                 {return (exp((nodePotentials[1] - nodePotentials[0])/thermalVoltage) - 1) *  reverseCurrent - edgeCurrents[0];};
+
     std::vector<DoubleFunction> edgeDerivatives, nodeDerivatives;
+
     edgeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials){return -1.;});
+
     nodeDerivatives.push_back([reverseCurrent, thermalVoltage](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return -exp((nodePotentials[1] - nodePotentials[0])/thermalVoltage) * reverseCurrent / thermalVoltage;});
+
     nodeDerivatives.push_back([reverseCurrent, thermalVoltage](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                             {return exp((nodePotentials[1] - nodePotentials[0])/thermalVoltage) * reverseCurrent / thermalVoltage;});
-    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives);
+
+    res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "Diode");
 
     return res;
 }
