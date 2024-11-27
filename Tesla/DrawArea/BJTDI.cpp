@@ -173,12 +173,10 @@ std::vector<NLSolverElement> BJTDI::getNLSolverElements()
 
     const double b_F = 100.;
     const double b_R = 5.;
-    const double a_F = b_F / (1 + b_F);
-    const double a_R = b_R / (1 + b_R);
 
-    const double I_ES = 10e-13;
-    const double I_CS = 10e-13;
-    const double V_T = 0.026;
+    const double I_S = 1e-13;
+    const double log_I_S = log(I_S);
+    const double V_T = 0.025;
     {
         // Eq for emitter current
         std::vector<unsigned> nodes;
@@ -186,26 +184,27 @@ std::vector<NLSolverElement> BJTDI::getNLSolverElements()
         std::vector<unsigned> edges;
         edges.push_back(m_emitterEdge);
 
-        DoubleFunction equation = [V_T, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                    {return I_ES*(exp((nodePotentials[1] - nodePotentials[0])/V_T) -1.)
-                                    -I_CS/b_R*(exp((nodePotentials[2] - nodePotentials[0])/V_T) -1.)
+        DoubleFunction equation = [V_T, b_F, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                    {return I_S * ( (1+1/b_F) * exp((nodePotentials[1] - nodePotentials[0])/V_T)
+                                    -1
+                                    -exp((nodePotentials[2] - nodePotentials[0])/V_T))
                                     -edgeCurrents[0];};
 
         std::vector<DoubleFunction> edgeDerivatives, nodeDerivatives;
         edgeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                                 {return -1.;});
 
-        nodeDerivatives.push_back([V_T, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return -I_ES/V_T*exp((nodePotentials[1] - nodePotentials[0])/V_T)
-                                    + I_CS/(V_T*b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T);});
+        nodeDerivatives.push_back([V_T, b_F, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return I_S/V_T * ( -(1+1/b_F) * exp((nodePotentials[1] - nodePotentials[0])/V_T)
+                                +exp((nodePotentials[2] - nodePotentials[0])/V_T));});
 
-        nodeDerivatives.push_back([V_T, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return I_ES/V_T * exp((nodePotentials[1] - nodePotentials[0])/V_T);});
+        nodeDerivatives.push_back([V_T, b_F, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return I_S/V_T * ( (1+1/b_F) * exp((nodePotentials[1] - nodePotentials[0])/V_T));});
 
-        nodeDerivatives.push_back([V_T, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return -I_CS/(V_T*b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T);});
+        nodeDerivatives.push_back([V_T, b_F, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return I_S/V_T * (-exp((nodePotentials[2] - nodePotentials[0])/V_T));});
 
-        res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "BJT_1");
+        res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "BJT_Em");
     }
     {
         // Eq for collector current
@@ -214,26 +213,27 @@ std::vector<NLSolverElement> BJTDI::getNLSolverElements()
         std::vector<unsigned> edges;
         edges.push_back(m_collectorEdge);
 
-        DoubleFunction equation = [V_T, a_F, a_R, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                    {return I_ES*a_F * (exp((nodePotentials[1] - nodePotentials[0])/V_T) -1.)
-                                    - (I_CS * a_R) / b_R *(exp((nodePotentials[2] - nodePotentials[0])/V_T) -1.)
+        DoubleFunction equation = [V_T, b_R, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                    {return I_S * (exp((nodePotentials[1] - nodePotentials[0])/V_T)
+                                    + 1
+                                    - (1+1/b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T))
                                     - edgeCurrents[0];};
 
         std::vector<DoubleFunction> edgeDerivatives, nodeDerivatives;
         edgeDerivatives.push_back([](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
                                 {return -1.;});
 
-        nodeDerivatives.push_back([V_T, a_F, a_R, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return -(I_ES*a_F)/V_T * exp((nodePotentials[1] - nodePotentials[0])/V_T)
-                                + (I_CS*a_R) / (V_T*b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T);});
+        nodeDerivatives.push_back([V_T, b_R, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return -I_S/V_T * (exp((nodePotentials[1] - nodePotentials[0])/V_T)
+                                + (1+1/b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T));});
 
-        nodeDerivatives.push_back([V_T, a_F, a_R, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return (I_ES*a_F) / V_T * exp((nodePotentials[1] - nodePotentials[0])/V_T);});
+        nodeDerivatives.push_back([V_T, b_R, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return I_S/V_T * (exp((nodePotentials[1] - nodePotentials[0])/V_T));});
 
-        nodeDerivatives.push_back([V_T, a_F, a_R, b_R, I_ES, I_CS](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return -(I_CS*a_R) / (V_T*b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T);});
+        nodeDerivatives.push_back([V_T, b_R, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
+                                {return -I_S /V_T * (1+1/b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T);});
 
-        res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "BJT_2");
+        res.emplace_back(edges, nodes, equation, edgeDerivatives, nodeDerivatives, "BJT_Col");
     }
 
     return res;
