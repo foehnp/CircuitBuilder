@@ -253,4 +253,6 @@ void MainView::initializeToolboxArea()
     m_toolboxArea->pushBackItem(bulbTI);
     m_toolboxArea->pushBackItem(diodeTI);
     m_toolboxArea->pushBackItem(bJTTI);
+
+    m_toolboxArea->setSelectedItem(0);
 }
