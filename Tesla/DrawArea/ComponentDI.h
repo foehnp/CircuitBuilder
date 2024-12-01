@@ -10,6 +10,9 @@
 #include <memory>
 #include <string>
 
+#include <vector>
+#include <cmath>
+
 class QJsonObject;
 class ScaleCollection;
 
