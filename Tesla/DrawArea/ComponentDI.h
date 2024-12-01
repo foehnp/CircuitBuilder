@@ -74,6 +74,11 @@ public:
 
     void runParamDialog();
 
+    std::vector<std::pair<QString, double>> getUserParamsForPersistence() const;
+
+    void setUserParamsFromPersistence(const std::unordered_map<QString, double>& persParams);
+
+
 private:
     void paintBackground(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     virtual void paintSymbol(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) = 0;

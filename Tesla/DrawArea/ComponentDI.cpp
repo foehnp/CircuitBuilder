@@ -89,6 +89,34 @@ void ComponentDI::runParamDialog()
     }
 }
 
+std::vector<std::pair<QString, double> > ComponentDI::getUserParamsForPersistence() const
+{
+    std::vector<std::pair<QString, double>> res;
+    res.reserve(m_userParams.size());
+    for (const auto& param : m_userParams)
+    {
+        res.emplace_back(param.displayName, param.val);
+    }
+    return res;
+}
+
+void ComponentDI::setUserParamsFromPersistence(const std::unordered_map<QString, double>&persParams)
+{
+    std::unordered_map<QString, double> paramMap;
+    for (const auto& param : persParams)
+    {
+        paramMap.emplace(param.first, param.second);
+    }
+    for (auto& param : m_userParams)
+    {
+        auto finder = paramMap.find(param.displayName);
+        if (finder != paramMap.end())
+        {
+            param.val = finder->second;
+        }
+    }
+}
+
 void ComponentDI::paintArrow(QPainter *painter, const QPointF &pos, const double &height, const QColor& color, int orientation)
 {
     double breadth = height * 0.35;

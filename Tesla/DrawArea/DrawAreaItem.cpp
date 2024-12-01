@@ -428,6 +428,9 @@ static QString ROW_NAME = "row";
 static QString COL_NAME = "col";
 static QString ORIENTATION_NAME = "ori";
 static QString COMPONENT_NAME = "comp_name";
+static QString COMPPARAMARRAY = "compparamarray";
+static QString COMPPARAM_NAME = "compparam_name";
+static QString COMPPARAM_VAL = "compparam_val";
 
 QJsonObject componentToQJsonObject(const ComponentDI& comp, int row, int col)
 {
@@ -436,6 +439,15 @@ QJsonObject componentToQJsonObject(const ComponentDI& comp, int row, int col)
     res[COMPONENT_NAME] = QString(componentNameToPersistenceName(comp.getComponentName()).c_str());
     res[ROW_NAME] = row;
     res[COL_NAME] = col;
+    QJsonArray paramArray;
+    for (auto param : comp.getUserParamsForPersistence())
+    {
+        QJsonObject JSONParam;
+        JSONParam[COMPPARAM_NAME] = param.first;
+        JSONParam[COMPPARAM_VAL] = param.second;
+        paramArray.append(JSONParam);
+    }
+    res[COMPPARAMARRAY] = paramArray;
     return res;
 }
 
@@ -495,9 +507,26 @@ bool DrawAreaItem::loadFromFile(const QJsonObject& object)
         int col = componentObject[COL_NAME].toInt();
         int ori = componentObject[ORIENTATION_NAME].toInt();
         ComponentName name = persistenceNameToComponentName(componentObject[COMPONENT_NAME].toString().toStdString());
+
+        std::unordered_map<QString, double> compParams;
+        if (componentObject.contains(COMPPARAMARRAY))
+        {
+            QJsonArray compParamArray = componentObject[COMPPARAMARRAY].toArray();
+            for (const QJsonValueRef& compParamValref : compParamArray)
+            {
+                if (!compParamValref.isObject())
+                {
+                    return false;
+                }
+                QJsonObject compParamObject = compParamValref.toObject();
+                compParams.emplace(compParamObject[COMPPARAM_NAME].toString(), compParamObject[COMPPARAM_VAL].toDouble());
+            }
+        }
+
         if (name != EmptyComponent)
         {
             m_components[row][col] = addComponentDI(name, row, col, ori);
+            m_components[row][col]->setUserParamsFromPersistence(compParams);
         }
     }
 
