@@ -224,7 +224,7 @@ std::vector<NLSolverElement> BJTDI::getNLSolverElements()
                                 {return -1.;});
 
         nodeDerivatives.push_back([V_T, b_R, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
-                                {return -I_S/V_T * (exp((nodePotentials[1] - nodePotentials[0])/V_T)
+                                {return I_S/V_T * (-exp((nodePotentials[1] - nodePotentials[0])/V_T)
                                 + (1+1/b_R) * exp((nodePotentials[2] - nodePotentials[0])/V_T));});
 
         nodeDerivatives.push_back([V_T, b_R, I_S](std::vector<double> edgeCurrents, std::vector<double> nodePotentials)
