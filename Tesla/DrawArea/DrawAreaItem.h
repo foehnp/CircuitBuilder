@@ -41,8 +41,6 @@ public:
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
-//    void constructSolver();
-
     void constructNLSolver();
 
     bool updateValues();
@@ -66,11 +64,7 @@ private:
 
     RunMode m_runMode = Drawing;
 
-//    std::shared_ptr<Solver> m_solver;
     std::shared_ptr<NLSolver> m_NLsolver;
-
-//    std::vector<double> m_potentials;
-//    std::vector<double> m_currents;
 
     std::shared_ptr<ScaleCollection> m_displaySettings;
 

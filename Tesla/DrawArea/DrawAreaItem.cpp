@@ -14,6 +14,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QKeyEvent>
 
 #include <QGraphicsSceneMouseEvent>
 
@@ -180,94 +181,6 @@ void DrawAreaItem::onItemSelected(int m, int n)
     }
 }
 
-//void DrawAreaItem::constructSolver()
-//{
-//    for (int j = 0; j < m_vertNumSquares; ++j)
-//    {
-//        for (int i = 0; i < m_horiNumSquares; ++i)
-//        {
-//            m_components[i][j]->resetNodes();
-//            m_components[i][j]->resetEdges();
-//        }
-//    }
-
-//    m_solver = std::make_shared<Solver>();
-//    // Connect outer nodes of components
-//    for (int j = 0; j < m_vertNumSquares; ++j)
-//    {
-//        for (int i = 0; i < m_horiNumSquares; ++i)
-//        {
-//            ComponentDI* currDI = m_components[i][j];
-
-//            if(int* leftNode = currDI->getNodeAt(3))
-//            {
-//                if (*leftNode == -1)
-//                {
-//                    *leftNode = m_solver->addNode();
-//                }
-//            }
-//            if(int* topNode = currDI->getNodeAt(0))
-//            {
-//                if (*topNode == -1)
-//                {
-//                    *topNode = m_solver->addNode();
-//                }
-//            }
-
-//            if(int* rightNode = currDI->getNodeAt(1))
-//            {
-//                *rightNode = m_solver->addNode();
-//                if (i < m_horiNumSquares - 1)
-//                {
-//                    ComponentDI* rightDI = m_components[i+1][j];
-//                    if (int* neighborNode = rightDI->getNodeAt(3))
-//                    {
-//                        *neighborNode = *rightNode;
-//                    }
-//                }
-//            }
-//            if(int* bottomNode = currDI->getNodeAt(2))
-//            {
-//                *bottomNode = m_solver->addNode();
-//                if (j < m_vertNumSquares - 1)
-//                {
-//                    ComponentDI* bottomDI = m_components[i][j+1];
-//                    if (int* neighborNode = bottomDI->getNodeAt(0))
-//                    {
-//                        *neighborNode = *bottomNode;
-//                    }
-//                }
-//            }
-
-//            std::vector<int*> innerNodes = m_components[i][j]->getAllInnerNodes();
-//            for (const auto& innerNode : innerNodes)
-//            {
-//                *innerNode = m_solver->addNode();
-//            }
-//        }
-//    }
-
-//    for (int j = 0; j < m_vertNumSquares; ++j)
-//    {
-//        for (int i = 0; i < m_horiNumSquares; ++i)
-//        {
-//            std::vector<std::pair<int*, SolverEdge>> edgePairs = m_components[i][j]->getAllEdges();
-//            for (const auto& edgePair : edgePairs)
-//            {
-//                const SolverEdge& edge = edgePair.second;
-//                *edgePair.first = m_solver->addEdge(edge.lNode, edge.rNode, edge.resistance, edge.voltage);
-//            }
-//        }
-//    }
-
-//    for (int j = 0; j < m_vertNumSquares; ++j)
-//    {
-//        for (int i = 0; i < m_horiNumSquares; ++i)
-//        {
-//            m_components[i][j]->setSolver(m_solver);
-//        }
-//    }
-//}
 
 void DrawAreaItem::constructNLSolver()
 {
@@ -414,9 +327,9 @@ bool DrawAreaItem::getMinMaxValues(PhysicalQuantity quantity, double &min, doubl
         max = 1.;
         return true;
     }
-    double step = pow(10, round(log(diff)) - 1.);
-    min = (int)floor(realMin/step) * step;
-    max = (int)ceil(realMax/step) * step;
+    double step = pow(10, round(log10(diff)) - 1.);
+    min = round(realMin/step - 0.5) * step;
+    max = round(realMax/step + 0.5) * step;
     return true;
 }
 

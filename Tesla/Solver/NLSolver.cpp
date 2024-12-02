@@ -204,8 +204,12 @@ bool NLSolver::getMinMaxCurrent(double &min, double &max) const
     {
         return false;
     }
-
-    min = *std::min_element(m_currents.begin(), m_currents.end());
-    max = *std::max_element(m_currents.begin(), m_currents.end());
+    min = fabs(m_currents[0]);
+    max = fabs(m_currents[0]);
+    for (int i = 0; i < m_currents.size(); ++i)
+    {
+        min = std::min(min, fabs(m_currents[i]));
+        max = std::max(max, fabs(m_currents[i]));
+    }
     return true;
 }
