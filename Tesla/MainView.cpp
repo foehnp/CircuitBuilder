@@ -137,6 +137,19 @@ void MainView::wheelEvent(QWheelEvent *event)
     }
 }
 
+void MainView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_R)
+    {
+        int newOrientation = (m_currentMouseOrientation + 1) % 4;
+        if (newOrientation != m_currentMouseOrientation)
+        {
+            m_currentMouseOrientation = newOrientation;
+        }
+    }
+    event->accept();
+}
+
 bool MainView::run()
 {
     m_drawArea->constructNLSolver();

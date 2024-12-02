@@ -30,6 +30,8 @@ public:
 
     void wheelEvent(QWheelEvent* event) override;
 
+    void keyPressEvent(QKeyEvent *event) override;
+
     bool run();
     void stop();
 
