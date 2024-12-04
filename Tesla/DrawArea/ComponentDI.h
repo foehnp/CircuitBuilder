@@ -64,6 +64,11 @@ public:
 
     virtual std::vector<NLSolverElement> getNLSolverElements() = 0;
 
+    virtual std::vector<int> getNonConservativeNodes()
+    {
+        return {};
+    }
+
     void setDisplaySettings(const std::shared_ptr<ScaleCollection>& displaySettings);
 
     void setSolver(const std::shared_ptr<Solver>& solver);

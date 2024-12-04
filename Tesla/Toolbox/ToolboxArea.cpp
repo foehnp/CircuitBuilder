@@ -80,6 +80,10 @@ void ToolboxArea::setSelectedItem(int index)
     {
         m_mainView->setCurrentMouseMode(MouseModes::BJTMM);
     }
+    else if (m_currSelected == 9)
+    {
+        m_mainView->setCurrentMouseMode(MouseModes::GroundMM);
+    }
 }
 
 void ToolboxArea::setIsAvailable(bool isAvailable)

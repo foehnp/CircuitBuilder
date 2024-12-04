@@ -15,6 +15,7 @@
 #include <Toolbox/ForkTI.h>
 #include <Toolbox/DiodeTI.h>
 #include <Toolbox/BJTTI.h>
+#include <Toolbox/GroundTI.h>
 
 #include <Scale/ScaleCollection.h>
 #include <Scale/ScaleGraphicsItem.h>
@@ -256,6 +257,7 @@ void MainView::initializeToolboxArea()
     BulbTI* bulbTI = new BulbTI(m_squareBreadth, wireThickness);
     DiodeTI* diodeTI = new DiodeTI(m_squareBreadth, wireThickness);
     BJTTI* bJTTI = new BJTTI(m_squareBreadth, wireThickness);
+    GroundTI* groundTI = new GroundTI(m_squareBreadth, wireThickness);
 
     m_toolboxArea->pushBackItem(eTI);
     m_toolboxArea->pushBackItem(erTI);
@@ -266,6 +268,7 @@ void MainView::initializeToolboxArea()
     m_toolboxArea->pushBackItem(bulbTI);
     m_toolboxArea->pushBackItem(diodeTI);
     m_toolboxArea->pushBackItem(bJTTI);
+    m_toolboxArea->pushBackItem(groundTI);
 
     m_toolboxArea->setSelectedItem(0);
 }

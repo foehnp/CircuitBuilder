@@ -35,6 +35,11 @@ void NLSolver::addElement(const NLSolverElement& element)
     m_solverElements.emplace_back(element);
 }
 
+void NLSolver::markNonConservativeNode(const std::vector<int> &nodes)
+{
+    m_nonConservativeNodes.insert(nodes.begin(), nodes.end());
+}
+
 std::vector<double> getSubVector(const Eigen::VectorXd& allVals, unsigned start, const std::vector<unsigned>& indices)
 {
     std::vector<double> retVal;
@@ -53,7 +58,8 @@ bool NLSolver::compute()
     int numEdges = m_edges.size();
     int numNodes = m_nodes.size();
     int numElements = m_solverElements.size();
-    int numEqs   = numElements + numNodes;
+    int numNonConservativeNodes = m_nonConservativeNodes.size();
+    int numEqs   = numElements + numNodes - numNonConservativeNodes;
     if (numEqs == 0)
     {
         return false;
@@ -74,13 +80,20 @@ bool NLSolver::compute()
             std::vector<double> nodeArguments = getSubVector(vals, numEdges, element.nodes);
             y(i) = element.equation(edgeArguments, nodeArguments);
         }
+
+        int usedNodes = 0;
         for (int i=0; i<numNodes; ++i)
         {
-            int rowIdx = numElements + i;
+            if (m_nonConservativeNodes.count(i) > 0)
+            {
+                continue;
+            }
+            int rowIdx = numElements + usedNodes;
             for (const auto& edge : m_nodes[i].incidentEdges)
             {
                 y(rowIdx) += edge.first * vals(edge.second);
             }
+            ++usedNodes;
         }
 //        y(numEqs-1) = vals(numEqs-1);
         if (y.norm() < m_convergenceTolerance)
@@ -107,38 +120,21 @@ bool NLSolver::compute()
                 J(i, numEdges + element.nodes[j]) = element.nodeDerivatives[j](edgeArguments, nodeArguments);
             }
         }
+
+        usedNodes = 0;
         for (int i=0; i<numNodes; ++i)
         {
-            int rowIdx = numElements + i;
+            if (m_nonConservativeNodes.count(i) > 0)
+            {
+                continue;
+            }
+            int rowIdx = numElements + usedNodes;
             for (const auto& edge : m_nodes[i].incidentEdges)
             {
                 J(rowIdx, edge.second) = edge.first;
             }
+            ++usedNodes;
         }
-//        J(numEqs-1, numEqs-1) = 1.;
-
-//        for (int i = 0; i < numEqs; ++i)
-//        {
-//            std::string debugString;
-//            for (int j = 0; j < numEqs; ++j)
-//            {
-//                debugString += std::to_string(J(i,j)) + ",";
-//            }
-//            qDebug() << debugString.c_str() /*<< " || " << std::to_string(u(i)).c_str()*/;
-//        }
-
-//        Eigen::MatrixXd I = J.inverse();
-//        for (int i = 0; i < numEqs; ++i)
-//        {
-//            std::string debugString;
-//            for (int j = 0; j < numEqs; ++j)
-//            {
-//                debugString += std::to_string(I(i,j)) + ",";
-//            }
-//            qDebug() << debugString.c_str() /*<< " || " << std::to_string(u(i)).c_str()*/;
-//        }
-
-//        qDebug() << "det(J) = " << J.determinant() << "\n";
 
         // Do Newton step
         Eigen::VectorXd diff = J.colPivHouseholderQr().solve(y);

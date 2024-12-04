@@ -17,7 +17,8 @@ enum ComponentName
     Bulb,
     Diode,
     BJT,
-    Resistor
+    Resistor,
+    Ground,
 };
 
 
@@ -33,7 +34,8 @@ enum MouseModes
     BulbMM,
     DiodeMM,
     BJTMM,
-    ResistorMM
+    ResistorMM,
+    GroundMM,
 };
 
 enum RunMode
@@ -58,6 +60,7 @@ static std::map<std::string, ComponentName> persistenceNameToComponentNameMap = 
     {"Diode" , Diode},
     {"BJT" , BJT},
     {"Resistor" , Resistor},
+    {"Ground" , Ground},
 };
 
 static ComponentName persistenceNameToComponentName(const std::string& persistenceName)

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <functional>
+#include <set>
 
 //typedef double (*DoubleFunction)(std::vector<double>, std::vector<double>);
 typedef std::function<double(std::vector<double>, std::vector<double>)> DoubleFunction;
@@ -59,6 +60,8 @@ public:
 
     void addElement(const NLSolverElement& element);
 
+    void markNonConservativeNode(const std::vector<int>& nodes);
+
     bool compute();
 
     double getPotential(int i) const;
@@ -71,6 +74,7 @@ private:
     std::vector<NLSolverNode> m_nodes;
     std::vector<NLSolverEdge> m_edges;
     std::vector<NLSolverElement> m_solverElements;
+    std::set<int> m_nonConservativeNodes;
 
     std::vector<double> m_potentials;
     std::vector<double> m_currents;

@@ -1,4 +1,5 @@
 #include "DrawAreaItem.h"
+#include "GroundDI.h"
 
 #include <DrawArea/WireDI.h>
 #include <DrawArea/CornerWireDI.h>
@@ -91,6 +92,10 @@ ComponentDI* DrawAreaItem::addComponentDI(ComponentName name, int m, int n, int 
     {
         componentDI = new BJTDI(m_squareBreadth, 0.05, orientation);
     }
+    else if ( name == Ground)
+    {
+        componentDI = new GroundDI(m_squareBreadth, 0.05, orientation);
+    }
     componentDI->setParentItem(this);
     componentDI->setPos((m+0.5)*m_squareBreadth, (n+0.5)*m_squareBreadth);
     componentDI->setDisplaySettings(m_displaySettings);
@@ -178,6 +183,10 @@ void DrawAreaItem::onItemSelected(int m, int n)
     else if (mouseMode == MouseModes::BJTMM)
     {
         addComponentDI(ComponentName::BJT, m, n, mouseOrientation);
+    }
+    else if (mouseMode == MouseModes::GroundMM)
+    {
+        addComponentDI(ComponentName::Ground, m, n, mouseOrientation);
     }
 }
 
@@ -271,6 +280,7 @@ void DrawAreaItem::constructNLSolver()
             {
                 m_NLsolver->addElement(element);
             }
+            m_NLsolver->markNonConservativeNode(m_components[i][j]->getNonConservativeNodes());
         }
     }
 
