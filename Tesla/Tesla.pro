@@ -17,6 +17,7 @@ SOURCES += \
         DrawArea/DrawAreaItem.cpp \
         DrawArea/EmptyComponentDI.cpp \
         DrawArea/ForkDI.cpp \
+        DrawArea/GroundDI.cpp \
         DrawArea/ParamDialog.cpp \
         DrawArea/ResistorDI.cpp \
         DrawArea/WireDI.cpp \
@@ -39,6 +40,7 @@ SOURCES += \
         Toolbox/EmptyComponentTI.cpp \
         Toolbox/EraserTI.cpp \
         Toolbox/ForkTI.cpp \
+        Toolbox/GroundTI.cpp \
         Toolbox/ToolboxArea.cpp \
         Toolbox/WireTI.cpp \
         Toolbox/ComponentTI.cpp \
@@ -60,6 +62,7 @@ HEADERS += \
     DrawArea/DrawAreaItem.h \
     DrawArea/EmptyComponentDI.h \
     DrawArea/ForkDI.h \
+    DrawArea/GroundDI.h \
     DrawArea/ParamDialog.h \
     DrawArea/ResistorDI.h \
     DrawArea/WireDI.h \
@@ -84,6 +87,7 @@ HEADERS += \
     Toolbox/ComponentTI.h \
     Toolbox/EraserTI.h \
     Toolbox/ForkTI.h \
+    Toolbox/GroundTI.h \
     Toolbox/ToolboxArea.h \
     Toolbox/WireTI.h
 
