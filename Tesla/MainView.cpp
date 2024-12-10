@@ -75,6 +75,8 @@ MainView::MainView()
     m_drawArea->setDisplaySettings(m_scaleCollection);
 
     m_scene->setSceneRect(QRect(0., 0.,(m_horiNumSquares+ 2.5)*m_squareBreadth, (m_controlPane->boundingRect().bottomLeft() + m_controlPane->pos()).y() + 40.));
+
+    QObject::installEventFilter(this);
 }
 
 void MainView::setCurrentRunMode(const RunMode &runMode)
@@ -127,28 +129,37 @@ int MainView::getCurrentMouseOrientation() const
     return m_currentMouseOrientation;
 }
 
-void MainView::wheelEvent(QWheelEvent *event)
+bool MainView::eventFilter(QObject *obj, QEvent *event)
 {
-    int rawDelta = event->angleDelta().y();
-    int delta = (event->angleDelta().y() / 120) % 4;
-    int newOrientation = (m_currentMouseOrientation + delta + 4) % 4;
-    if (newOrientation != m_currentMouseOrientation)
+    if (obj == this)
     {
-        m_currentMouseOrientation = newOrientation;
-    }
-}
-
-void MainView::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_R)
-    {
-        int newOrientation = (m_currentMouseOrientation + 1) % 4;
-        if (newOrientation != m_currentMouseOrientation)
+        if (event->type() == QEvent::KeyPress)
         {
-            m_currentMouseOrientation = newOrientation;
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+            if (keyEvent->key() == Qt::Key_R)
+            {
+                int newOrientation = (m_currentMouseOrientation + 1) % 4;
+                if (newOrientation != m_currentMouseOrientation)
+                {
+                    m_currentMouseOrientation = newOrientation;
+                }
+                return true;
+            }
+        }
+        else if (event->type() == QEvent::Wheel)
+        {
+            QWheelEvent* wheelEvent = static_cast<QWheelEvent*>(event);
+            int rawDelta = wheelEvent->angleDelta().y();
+            int delta = (wheelEvent->angleDelta().y() / 120) % 4;
+            int newOrientation = (m_currentMouseOrientation + delta + 4) % 4;
+            if (newOrientation != m_currentMouseOrientation)
+            {
+                m_currentMouseOrientation = newOrientation;
+            }
+            return true;
         }
     }
-    event->accept();
+    return QGraphicsView::eventFilter(obj, event);
 }
 
 bool MainView::run()

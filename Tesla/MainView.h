@@ -28,9 +28,7 @@ public:
     void setCurrentMouseOrientation(int orientation);
     int getCurrentMouseOrientation() const;
 
-    void wheelEvent(QWheelEvent* event) override;
-
-    void keyPressEvent(QKeyEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
     bool run();
     void stop();
