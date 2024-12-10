@@ -1,0 +1,138 @@
+{
+    "draw_area": {
+        "components": [
+            {
+                "col": 2,
+                "comp_name": "CornerWire",
+                "compparamarray": [
+                ],
+                "ori": 0,
+                "row": 3
+            },
+            {
+                "col": 2,
+                "comp_name": "CornerWire",
+                "compparamarray": [
+                ],
+                "ori": 3,
+                "row": 4
+            },
+            {
+                "col": 3,
+                "comp_name": "CornerWire",
+                "compparamarray": [
+                ],
+                "ori": 0,
+                "row": 2
+            },
+            {
+                "col": 3,
+                "comp_name": "BJT",
+                "compparamarray": [
+                ],
+                "ori": 0,
+                "row": 3
+            },
+            {
+                "col": 3,
+                "comp_name": "Wire",
+                "compparamarray": [
+                ],
+                "ori": 3,
+                "row": 4
+            },
+            {
+                "col": 4,
+                "comp_name": "Battery",
+                "compparamarray": [
+                    {
+                        "compparam_name": "Voltage",
+                        "compparam_val": 1
+                    }
+                ],
+                "ori": 3,
+                "row": 2
+            },
+            {
+                "col": 4,
+                "comp_name": "Wire",
+                "compparamarray": [
+                ],
+                "ori": 3,
+                "row": 3
+            },
+            {
+                "col": 4,
+                "comp_name": "Battery",
+                "compparamarray": [
+                    {
+                        "compparam_name": "Voltage",
+                        "compparam_val": 50
+                    }
+                ],
+                "ori": 3,
+                "row": 4
+            },
+            {
+                "col": 5,
+                "comp_name": "Bulb",
+                "compparamarray": [
+                    {
+                        "compparam_name": "Resistance",
+                        "compparam_val": 10
+                    }
+                ],
+                "ori": 3,
+                "row": 2
+            },
+            {
+                "col": 5,
+                "comp_name": "Wire",
+                "compparamarray": [
+                ],
+                "ori": 3,
+                "row": 3
+            },
+            {
+                "col": 5,
+                "comp_name": "Bulb",
+                "compparamarray": [
+                    {
+                        "compparam_name": "Resistance",
+                        "compparam_val": 10
+                    }
+                ],
+                "ori": 3,
+                "row": 4
+            },
+            {
+                "col": 6,
+                "comp_name": "CornerWire",
+                "compparamarray": [
+                ],
+                "ori": 1,
+                "row": 2
+            },
+            {
+                "col": 6,
+                "comp_name": "Fork",
+                "compparamarray": [
+                ],
+                "ori": 3,
+                "row": 3
+            },
+            {
+                "col": 6,
+                "comp_name": "CornerWire",
+                "compparamarray": [
+                ],
+                "ori": 2,
+                "row": 4
+            }
+        ],
+        "gen_info": {
+            "hori_size": 10,
+            "vert_size": 10
+        }
+    }
+}
