@@ -166,8 +166,8 @@ bool NLSolver::compute()
         m_potentials.push_back(vals[numEdges+i]);
     }
     // Make average potential equal to zero
-    double meanOfPots = std::accumulate(m_potentials.begin(), m_potentials.end(), 0.) / m_potentials.size();
-    std::for_each(m_potentials.begin(), m_potentials.end(), [meanOfPots](double& val){val -= meanOfPots;});
+//    double meanOfPots = std::accumulate(m_potentials.begin(), m_potentials.end(), 0.) / m_potentials.size();
+//    std::for_each(m_potentials.begin(), m_potentials.end(), [meanOfPots](double& val){val -= meanOfPots;});
 
     return true;
 }
